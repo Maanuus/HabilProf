@@ -113,9 +113,7 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-plus-circle"></i> Nueva Habilitación
-                        </button>
+                        <a href="{{ route('habilitaciones.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nueva habilitación</a>
                     </div>
                 </div>
 
