@@ -56,12 +56,12 @@
                         <h1 class="h4 mb-4">Nueva habilitación</h1>
                         <form>
                             <div class="row g-3">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <label class="form-label fw-semibold">RUT</label>
-                                    <input name="rut" value="{{ old('rut') }}" class="form-control" placeholder="Sin puntos ni dígito verificador" required>
+                                    <input name="rut" value="{{ old('rut') }}" class="form-control" placeholder="Sin puntos y con número verificador" required>
                                 </div>
 
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <label class="form-label fw-semibold">Nombre Alumno</label>
                                     <input name="nombre_alumno" value="{{ old('nombre_alumno') }}" class="form-control" placeholder="Nombre Completo" required>
                                 </div>
@@ -100,33 +100,29 @@
                                         <div class="col-12">
                                             <label class="form-label fw-semibold">Título</label>
                                             <input name="titulo" id="titulo" class="form-control" maxlength="100"
-                                                   placeholder="Título del proyecto"
+                                                   placeholder="Solo letras y espacios (Máx. 100 carácteres)"
                                                    pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,100}$">
-                                            <div class="form-text">Solo letras y espacios. Máx 100. (R2.3.1)</div>
                                             <div class="invalid-feedback">Título inválido.</div>
                                         </div>
 
                                         <div class="col-12">
                                             <label class="form-label fw-semibold">Descripción</label>
                                             <textarea name="descripcion" id="descripcion" class="form-control" rows="4" maxlength="500"
-                                                placeholder="Descripción (máx 500)"></textarea>
-                                            <div class="form-text">Máx 500 caracteres. (R2.3.2)</div>
+                                                placeholder="Solo letras y espacios (máx 500)"></textarea>
                                             <div class="invalid-feedback">Descripción requerida.</div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">RUT Profesor Comisión (obligatorio)</label>
                                             <input name="rut_profesor_comision" id="rut_profesor_comision" class="form-control"
-                                                placeholder="XXXXXXXX-X" pattern="^\d{7,8}-[\dkK]$">
-                                            <div class="form-text">Tipo_Profesor: “Profesor Comisión”. (R2.2.3.1.1)</div>
+                                                placeholder="Sin puntos y con número verificador" pattern="^\d{7,8}-[\dkK]$">
                                             <div class="invalid-feedback">RUT inválido u omitido.</div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">RUT Profesor Co-guía (opcional)</label>
                                             <input name="rut_profesor_coguia" id="rut_profesor_coguia" class="form-control"
-                                                placeholder="XXXXXXXX-X" pattern="^\d{7,8}-[\dkK]$">
-                                            <div class="form-text">Tipo_Profesor: “Profesor Co-guía”. (R2.2.3.1)</div>
+                                                placeholder="Sin puntos y con número verificador" pattern="^\d{7,8}-[\dkK]$">
                                             <div class="invalid-feedback">RUT inválido.</div>
                                         </div>
 
@@ -134,7 +130,6 @@
                                             <label class="form-label fw-semibold">Semestre de inicio</label>
                                             <input name="semestre_inicio" id="semestre_inicio" class="form-control" placeholder="AAAA-S"
                                                 pattern="^(1990|199[1-9]|20[0-3][0-9]|204[0-5])-[12]$">
-                                            <div class="form-text">Formato “AAAA-S”, AAAA ∈ [1990, 2045], S ∈ {1,2}. (R2.2.4)</div>
                                             <div class="invalid-feedback">Formato inválido (ej: 2025-1).</div>
                                         </div>
                                     </div>
@@ -149,18 +144,16 @@
                                       <div class="col-md-7">
                                         <label class="form-label fw-semibold">Nombre Empresa</label>
                                         <input name="nombre_Empresa" id="nombre_Empresa" class="form-control" maxlength="100"
-                                               placeholder="Nombre de la empresa"
+                                               placeholder="Solo letras y espacios (Máx. 100 carácteres)"
                                                pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,100}$">
-                                        <div class="form-text">Solo letras y espacios. Máx 100. (R2.3.1)</div>
                                         <div class="invalid-feedback">Nombre inválido.</div>
                                       </div>
 
                                       <div class="col-md-5">
                                         <label class="form-label fw-semibold">Nombre Supervisor</label>
                                         <input name="nombre_Supervisor" id="nombre_Supervisor" class="form-control" maxlength="80"
-                                           placeholder="Nombre del supervisor"
+                                           placeholder="Solo letras y espacios (Máx. 80 carácteres)"
                                            pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,80}$">
-                                            <div class="form-text">Solo letras y espacios. Máx 80. (R2.3.2)</div>
                                             <div class="invalid-feedback">Nombre inválido.</div>
                                         </div>
                                     </div>
