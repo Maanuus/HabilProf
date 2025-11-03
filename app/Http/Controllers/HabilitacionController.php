@@ -22,4 +22,9 @@ class HabilitacionController extends Controller
     {
         return view('habilitaciones.edit');
     }
+
+    public function delete()
+    {
+        
+    }
 }

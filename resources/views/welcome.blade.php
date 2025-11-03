@@ -180,7 +180,13 @@
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
                                             </a>
+                                            <a class="mb-1" href="*">
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </a>
                                         </td>
+                                        
                                     </tr>
                                 </tbody>
                             </table>
