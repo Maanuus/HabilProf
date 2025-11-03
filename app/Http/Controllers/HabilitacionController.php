@@ -17,4 +17,9 @@ class HabilitacionController extends Controller
         // Por ahora, solo redirigimos de vuelta a la página de creación
         return redirect()->route('habilitaciones.create')->with('ok', 'Habilitación creada exitosamente.');
     }
+
+    public function edit()
+    {
+        return view('habilitaciones.edit');
+    }
 }

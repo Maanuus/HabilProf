@@ -19,3 +19,6 @@ Route::get('/habilitaciones/nueva', [HabilitacionController::class, 'create'])
 
 Route::post('/habilitaciones', [HabilitacionController::class, 'store'])
     ->name('habilitaciones.store');
+
+Route::get('/habilitaciones/edit', [HabilitacionController::class, 'edit'])
+    ->name('habilitaciones.edit');

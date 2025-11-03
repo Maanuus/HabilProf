@@ -145,9 +145,11 @@
                                         <td>2025-1</td>
                                         <td><strong>6.5</strong></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
+                                            <a href="{{route('habilitaciones.edit') }}">
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                            </a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -158,9 +160,11 @@
                                         <td>2025-1</td>
                                         <td>-</td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
+                                            <a href="{{route('habilitaciones.edit') }}">
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                            </a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -171,9 +175,11 @@
                                         <td>2025-1</td>
                                         <td><strong>5.8</strong></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
+                                            <a href="{{route('habilitaciones.edit') }}">
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 </tbody>
