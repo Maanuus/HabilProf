@@ -168,7 +168,7 @@
                         </form>
 
                         <div class="alert alert-info mt-3 mb-0">
-                            Mockup: no se guardan datos; al enviar se redirige a la página principal con mensaje.
+                            Mockup: Al editar los datos se va a la página principal con mensaje.
                         </div>
                     </div>
                 </div>
