@@ -129,7 +129,7 @@
                                 <th>Semestre</th>
                                 <th>Nota</th>
                                 <th>Descripción</th>
-
+                                <th>Acciones</th> {{-- nueva columna --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -141,10 +141,24 @@
                                     <td>{{ $h->semestre_inicio }}</td>
                                     <td>{{ $h->nota ?? '-' }}</td>
                                     <td>{{ $h->descripcion ?? '-' }}</td>
+
+                                    <td>
+                                        <!-- Botón Editar -->
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                            data-bs-target="#editModal">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+
+                                        <!-- Botón Eliminar -->
+                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">No hay habilitaciones recientes</td>
+                                    <td colspan="7" class="text-center">No hay habilitaciones recientes</td>
                                 </tr>
                             @endforelse
                         </tbody>
