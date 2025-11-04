@@ -80,9 +80,10 @@ class HabilitacionController extends Controller
         return view('habilitaciones.edit', compact('habilitacion'));
     }
 
-    public function delete()
+    public function update(Request $request, $id)
     {
-        
+        // VA AL HOME.
+        return redirect()->route('home')->with('ok', "Habilitacion #$id actualizada (mock).");
     }
 }
 
