@@ -18,13 +18,31 @@ class HabilitacionController extends Controller
         return redirect()->route('habilitaciones.create')->with('ok', 'Habilitación creada exitosamente.');
     }
 
-    public function edit()
-    {
-        return view('habilitaciones.edit');
-    }
-
-    public function delete()
+    public function edit($id)
     {
         
+        $habilitacion = [
+            'id_habilitacion' => $id,
+            'rut' => '12.345.678-9',
+            'nombre_alumno' => 'María González',
+            'carrera' => 'Ingeniería Civil Informática',
+            'correo_alumno' => 'maria@ucsc.cl',
+            'tipo_HabilProf' => 'PrIng', // PrIng | PrInv | PrTut
+            'titulo' => 'Sistema de Monitoreo Energético',
+            'descripcion' => 'Proyecto sobre eficiencia energética en hogares.',
+            'rut_profesor_comision' => '11111111-1',
+            'rut_profesor_coguia' => '',
+            'semestre_inicio' => '2025-1',
+            'nombre_Empresa' => '',
+            'nombre_Supervisor' => '',
+        ];
+
+        return view('habilitaciones.edit', compact('habilitacion'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // VA AL HOME.
+        return redirect()->route('home')->with('ok', "Habilitación #$id actualizada (mock).");
     }
 }

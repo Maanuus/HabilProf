@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ asset('images/ucsc_icon.png') }}" type="image/x-icon">
     <title>UCSC - HabilProf</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -13,31 +14,61 @@
             background-color: #dd120bff;
             color: white;
         }
+
         .sidebar {
             background-color: #f8f9fa;
             min-height: 100vh;
         }
+
         .stats-card {
             border-left: 4px solid #0056b3;
         }
+
         .sync-status {
             font-size: 0.8rem;
         }
+
         .nav-link {
             color: #495057;
         }
+
         .nav-link:hover {
             background-color: #e9ecef;
         }
     </style>
 </head>
+
+<!-- Modal eliminacion -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de eliminar la habilitación de <strong id="deleteItemName"></strong>?<br>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a id="confirmDeleteBtn" href="{{ route('home') }}" class="btn btn-danger">
+                    Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <body>
     <!-- Header -->
     <header class="ucsc-header py-2">
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col">
-                    <h4 class="mb-0"><a href=""><img src="{{ asset('images/ucsc_logo.png') }}" alt="Logo" width=180></a></h4>
+                    <h4 class="mb-0"><a href=""><img src="{{ asset('images/ucsc_logo.png') }}" alt="Logo" width=180></a>
+                    </h4>
                 </div>
                 <div class="col-auto">
                     <span class="me-3"><i class="bi bi-person-circle"></i> Admin_DINF</span>
@@ -48,155 +79,176 @@
     </header>
 
     <div class="container-fluid">
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4>Gestión de Habilitaciones Profesionales</h4>
-                    <div class="sync-status text-success">
-                        <i class="bi bi-check-circle-fill"></i> Sincronizado hace 30s
-                    </div>
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>Gestión de Habilitaciones Profesionales</h4>
+                <div class="sync-status text-success">
+                    <i class="bi bi-check-circle-fill"></i> Sincronizado hace 30s
                 </div>
+            </div>
 
-                <!-- Stats Cards -->
-                <div class="row mb-4">
-                    <div class="col-md-3 mb-3">
-                        <div class="card stats-card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">📊 45</h5>
-                                <p class="card-text">Habilitaciones Activas</p>
-                                <small class="text-success">+5 este semestre</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card stats-card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">🔧 25</h5>
-                                <p class="card-text">Proyecto Ingeniería</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card stats-card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">📚 12</h5>
-                                <p class="card-text">Proyecto Investigación</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card stats-card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">👥 8</h5>
-                                <p class="card-text">Práctica Tutelada</p>
-                            </div>
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">📊 45</h5>
+                            <p class="card-text">Habilitaciones Activas</p>
+                            <small class="text-success">+5 este semestre</small>
                         </div>
                     </div>
                 </div>
-
-                <!-- Search and Actions -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Buscar por RUT alumno...">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <i class="bi bi-search"></i>
-                            </button>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">🔧 25</h5>
+                            <p class="card-text">Proyecto Ingeniería</p>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option>Todas las modalidades</option>
-                            <option>Proyecto Ingeniería</option>
-                            <option>Proyecto Investigación</option>
-                            <option>Práctica Tutelada</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ route('habilitaciones.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nueva habilitación</a>
                     </div>
                 </div>
-
-                <!-- Table -->
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0"><i class="bi bi-table me-2"></i>Habilitaciones Registradas</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>RUT Alumno</th>
-                                        <th>Nombre Alumno</th>
-                                        <th>Modalidad</th>
-                                        <th>Profesor Guía</th>
-                                        <th>Semestre</th>
-                                        <th>Nota</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>12.345.678-9</td>
-                                        <td>María González</td>
-                                        <td><span class="badge bg-primary">PrIng</span></td>
-                                        <td>Dr. Pérez</td>
-                                        <td>2025-1</td>
-                                        <td><strong>6.5</strong></td>
-                                        <td>
-                                            <a href="{{route('habilitaciones.edit') }}">
-                                                <button class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>23.456.789-0</td>
-                                        <td>Carlos López</td>
-                                        <td><span class="badge bg-success">PrTut</span></td>
-                                        <td>Dra. Ríos</td>
-                                        <td>2025-1</td>
-                                        <td>-</td>
-                                        <td>
-                                            <a href="{{route('habilitaciones.edit') }}">
-                                                <button class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>34.567.890-1</td>
-                                        <td>Ana Silva</td>
-                                        <td><span class="badge bg-warning">PrInv</span></td>
-                                        <td>Dr. Muñoz</td>
-                                        <td>2025-1</td>
-                                        <td><strong>5.8</strong></td>
-                                        <td>
-                                            <a href="{{route('habilitaciones.edit') }}">
-                                                <button class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                            </a>
-                                            <a class="mb-1" href="*">
-                                                <button class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-trash3"></i>
-                                                </button>
-                                            </a>
-                                        </td>
-                                        
-                                    </tr>
-                                </tbody>
-                            </table>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">📚 12</h5>
+                            <p class="card-text">Proyecto Investigación</p>
                         </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">👥 8</h5>
+                            <p class="card-text">Práctica Tutelada</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Actions -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Buscar por RUT alumno...">
+                        <button class="btn btn-outline-secondary" type="button">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option>Todas las modalidades</option>
+                        <option>Proyecto Ingeniería</option>
+                        <option>Proyecto Investigación</option>
+                        <option>Práctica Tutelada</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ route('habilitaciones.create') }}" class="btn btn-primary"><i
+                            class="bi bi-plus-circle"></i> Nueva habilitación</a>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-table me-2"></i>Habilitaciones Registradas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>RUT Alumno</th>
+                                    <th>Nombre Alumno</th>
+                                    <th>Modalidad</th>
+                                    <th>Profesor Guía</th>
+                                    <th>Semestre</th>
+                                    <th>Nota</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>12.345.678-9</td>
+                                    <td>María González</td>
+                                    <td><span class="badge bg-primary">PrIng</span></td>
+                                    <td>Dr. Pérez</td>
+                                    <td>2025-1</td>
+                                    <td><strong>6.5</strong></td>
+                                    <td>
+                                        <a href="{{ route('habilitaciones.edit', ['id' => 1]) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal" data-id="1" data-nombre="María González">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>23.456.789-0</td>
+                                    <td>Carlos López</td>
+                                    <td><span class="badge bg-success">PrTut</span></td>
+                                    <td>Dra. Ríos</td>
+                                    <td>2025-1</td>
+                                    <td>-</td>
+                                    <td>
+                                        <a href="{{ route('habilitaciones.edit', ['id' => 2]) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal" data-id="2" data-nombre="Carlos López">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>34.567.890-1</td>
+                                    <td>Ana Silva</td>
+                                    <td><span class="badge bg-warning">PrInv</span></td>
+                                    <td>Dr. Muñoz</td>
+                                    <td>2025-1</td>
+                                    <td><strong>5.8</strong></td>
+                                    <td>
+                                        {{-- fila 3 --}}
+                                        <a href="{{ route('habilitaciones.edit', ['id' => 3]) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal" data-id="3" data-nombre="Ana Silva">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalEl = document.getElementById('confirmDeleteModal');
+
+            modalEl.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                const nombre = btn.getAttribute('data-nombre') || 'este registro';
+
+                modalEl.querySelector('#deleteItemName').textContent = nombre;
+            });
+        });
+    </script>
+
 </body>
+
 </html>
