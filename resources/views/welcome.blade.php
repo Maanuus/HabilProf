@@ -163,6 +163,30 @@
                             @endforelse
                         </tbody>
                     </table>
+                    <!-- Modal de confirmación de eliminación -->
+                    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ¿Seguro que deseas eliminar <strong id="deleteItemName">este registro</strong>?
+                                    <p class="text-muted small mb-0 mt-2">(Esto es solo una simulación, no eliminará
+                                        nada aún.)</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-danger"
+                                        data-bs-dismiss="modal">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,5 +196,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('confirmDeleteModal');
+
+        modalEl.addEventListener('show.bs.modal', function (event) {
+            const btn = event.relatedTarget;
+            const nombre = btn.getAttribute('data-nombre') || 'este registro';
+            modalEl.querySelector('#deleteItemName').textContent = nombre;
+        });
+    });
+</script>
 
 </html>
