@@ -20,3 +20,9 @@ Route::post('/habilitaciones', [HabilitacionController::class, 'store'])
 
 Route::get('/habilitaciones/historico', [HabilitacionListadosController::class, 'historicoForm'])->name('habilitaciones.HistoricoForm');
 Route::post('/habilitaciones/historico', [HabilitacionListadosController::class, 'historicoResultados'])->name('habilitaciones.HistoricoResultados');
+
+Route::get('/habilitaciones/{id}/editar', [HabilitacionController::class, 'edit'])
+    ->name('habilitaciones.edit');
+
+Route::put('/habilitaciones/{id}', [HabilitacionController::class, 'update'])
+    ->name('habilitaciones.update');

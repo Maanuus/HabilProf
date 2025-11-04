@@ -143,18 +143,17 @@
                                     <td>{{ $h->descripcion ?? '-' }}</td>
 
                                     <td>
-                                        <!-- Botón Editar -->
-                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editModal">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
+                                        <a href="{{ route('habilitaciones.edit', ['id' => 1]) }}"
+                                            class="btn btn-sm btn-primary">
+                                            Editar
+                                        </a>
 
-                                        <!-- Botón Eliminar -->
-                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                            data-bs-target="#confirmDeleteModal">
+                                        <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal" data-id="1">
                                             <i class="bi bi-trash3"></i>
-                                        </button>
+                                        </a>
                                     </td>
+
                                 </tr>
                             @empty
                                 <tr>
@@ -183,6 +182,48 @@
                                         data-bs-dismiss="modal">Cancelar</button>
                                     <button type="button" class="btn btn-danger"
                                         data-bs-dismiss="modal">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal de edición (mockup) -->
+                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="editModalLabel">Editar habilitación</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Aquí puedes mostrar datos falsos o de ejemplo -->
+                                    <form>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Nombre Alumno</label>
+                                                <input type="text" class="form-control" value="Ejemplo Alumno" disabled>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Tipo Habilitación</label>
+                                                <select class="form-select">
+                                                    <option>PrIng</option>
+                                                    <option>PrInv</option>
+                                                    <option>PrTut</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold">Descripción</label>
+                                                <textarea class="form-control" rows="3">Texto de ejemplo</textarea>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Guardar
+                                        cambios</button>
                                 </div>
                             </div>
                         </div>
