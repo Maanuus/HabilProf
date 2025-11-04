@@ -18,7 +18,7 @@ class HabilitacionController extends Controller
         return redirect()->route('habilitaciones.create')->with('ok', 'Habilitación creada exitosamente.');
     }
 
-    public function edit($id)
+    public function edit()
     {
         // cada habilitacion del home
         switch ((int) $id) {
@@ -80,11 +80,9 @@ class HabilitacionController extends Controller
         return view('habilitaciones.edit', compact('habilitacion'));
     }
 
-
-    public function update(Request $request, $id)
+    public function delete()
     {
-        // VA AL HOME.
-        return redirect()->route('home')->with('ok', "Habilitacion #$id actualizada (mock).");
+        
     }
 }
 
