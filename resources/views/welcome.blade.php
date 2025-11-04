@@ -151,7 +151,7 @@
 
                                         <!-- Botón Eliminar -->
                                         <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal">
+                                            data-bs-target="#confirmDeleteModal">
                                             <i class="bi bi-trash3"></i>
                                         </button>
                                     </td>
