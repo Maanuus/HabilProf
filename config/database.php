@@ -113,11 +113,11 @@ return [
         ],
 
         // Base de origen Alumnos
-        'alumnos' => [
+        'Modulos' => [
             'driver' => 'pgsql',
             'host' => env('DB_ALUMNOS_HOST', '127.0.0.1'),
             'port' => env('DB_ALUMNOS_PORT', '5432'),
-            'database' => env('DB_ALUMNOS_DATABASE', 'Alumno'),
+            'database' => env('DB_ALUMNOS_DATABASE', 'Modulos'),
             'username' => env('DB_ALUMNOS_USERNAME', 'postgres'),
             'password' => env('DB_ALUMNOS_PASSWORD', 'Elvis2808199356*'),
             'charset' => 'utf8',
