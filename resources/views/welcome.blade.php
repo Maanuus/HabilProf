@@ -110,6 +110,13 @@
                         <i class="bi bi-list-ul"></i> Listados Habilitación
                     </a>
                 </div>
+                <div class="col-auto p-0">
+                    <a href="{{ route('habilitaciones.ProfesorForm') }}" class="btn btn-primary">
+                        <i class="bi bi-list-ul"></i>Listado Habilitaciones por Profesor
+                    </a>
+
+                </div>
+
             </div>
         </div>
 
