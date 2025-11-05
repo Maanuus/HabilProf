@@ -23,8 +23,9 @@ class HabilitacionProfesorController extends Controller
         $rut_profesor = $request->rut_profesor;
         $dv = $request->dv;
         $semestre = $request->semestre_inicio;
+        $solo_semestre = $request->has('solo_semestre'); // <- checkbox
 
-        $resultados = DB::connection('pgsql2')->table('Supervisa')
+        $query = DB::connection('pgsql2')->table('Supervisa')
             ->join('Profesor', function ($join) {
                 $join->on('Supervisa.rut_Profesor', '=', 'Profesor.rut_Profesor')
                     ->on('Supervisa.DV', '=', 'Profesor.DV');
@@ -43,8 +44,16 @@ class HabilitacionProfesorController extends Controller
                 'Habilitacion_Profesional.semestre_inicio'
             )
             ->where('Supervisa.rut_Profesor', $rut_profesor)
-            ->where('Supervisa.DV', $dv)
-            ->where('Habilitacion_Profesional.semestre_inicio', '>=', $semestre)
+            ->where('Supervisa.DV', $dv);
+
+        // Aquí aplicamos el filtro del semestre según el checkbox
+        if ($solo_semestre) {
+            $query->where('Habilitacion_Profesional.semestre_inicio', '=', $semestre);
+        } else {
+            $query->where('Habilitacion_Profesional.semestre_inicio', '>=', $semestre);
+        }
+
+        $resultados = $query
             ->orderBy('Supervisa.tipo_Profesor')
             ->orderBy('Habilitacion_Profesional.semestre_inicio')
             ->get()

@@ -8,9 +8,9 @@
         @php
             $nombreProfesor = $resultados->first()->first()->nombre_Profesor ?? '';
         @endphp
-
+     
         <h3>El profesor <strong>{{ $nombreProfesor }}</strong> está a cargo de:</h3>
-
+         
         @foreach($resultados as $tipo => $habilitaciones)
             <div class="card my-4">
                 <div class="card-header bg-primary text-white">
@@ -41,5 +41,9 @@
             </div>
         @endforeach
     @endif
+    <a href="{{ route('habilitaciones.ProfesorForm') }}" class="btn btn-secondary">
+                ← Atrás
+            </a>
 </div>
+
 @endsection
