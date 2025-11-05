@@ -243,6 +243,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalEl = document.getElementById('confirmDeleteModal');
+
+            modalEl.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                const nombre = btn.getAttribute('data-nombre') || 'este registro';
+
+                modalEl.querySelector('#deleteItemName').textContent = nombre;
+            });
+        });
+    </script>
+
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
