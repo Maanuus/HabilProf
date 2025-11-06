@@ -26,19 +26,26 @@ class HabilitacionListadosController extends Controller
         ]);
 
         $semestre_inicio = $request->input('semestre_inicio');
-        $solo_semestre = $request->has('solo_semestre'); // true si el checkbox está marcado
+        $solo_semestre = $request->has('solo_semestre');
 
         $query = DB::connection('pgsql2')
             ->table('Alumno')
             ->join('Habilitacion_Profesional', 'Habilitacion_Profesional.rut_Alumno', '=', 'Alumno.rut_Alumno')
+            ->leftJoin('Pring', 'Pring.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
+            ->leftJoin('Prinv', 'Prinv.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
+            ->leftJoin('PrTut', 'PrTut.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
             ->select(
                 'Alumno.rut_Alumno',
                 'Alumno.DV',
                 'Alumno.nombre_Alumno',
-                DB::raw('"Habilitacion_Profesional"."tipo_HabilProf" AS "tipo_HabilProf"'),
+                'Habilitacion_Profesional.tipo_HabilProf',
                 'Habilitacion_Profesional.semestre_inicio',
                 'Habilitacion_Profesional.nota',
-                'Habilitacion_Profesional.descripcion'
+                'Habilitacion_Profesional.descripcion',
+                'Pring.titulo as titulo_Pring',
+                'Prinv.titulo as titulo_Prinv',
+                'PrTut.nombre_Empresa',
+                'PrTut.nombre_Supervisor'
             );
 
         if ($solo_semestre) {
@@ -47,12 +54,12 @@ class HabilitacionListadosController extends Controller
             $query->where('Habilitacion_Profesional.semestre_inicio', '>=', $semestre_inicio);
         }
 
-        $habilitaciones = $query
-            ->orderBy('Habilitacion_Profesional.semestre_inicio', 'asc')
-            ->get();
+        $habilitaciones = $query->orderBy('Habilitacion_Profesional.semestre_inicio', 'asc')->get();
 
         return view('habilitaciones.HistoricoResultados', compact('habilitaciones', 'semestre_inicio', 'solo_semestre'));
     }
+
+
     public function ultimasHabilitaciones()
     {
         $ultimas = DB::connection('pgsql2')

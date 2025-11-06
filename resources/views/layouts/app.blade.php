@@ -15,7 +15,7 @@
             background-color: #f8f9fa;
         }
         .ucsc-header {
-            background-color: #b30600ff;
+            background-color: #dd120bff;
             color: white;
         }
         .sync-status {
