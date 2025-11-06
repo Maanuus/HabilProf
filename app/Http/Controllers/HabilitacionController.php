@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HabilitacionController extends Controller
 {
@@ -11,15 +12,146 @@ class HabilitacionController extends Controller
         return view('habilitaciones.create');
     }
 
+    private function splitRut(string $rut): array
+    {
+        // Quita puntos y guiones, deja solo dígitos y K
+        $clean = strtoupper(preg_replace('/[^0-9K]/', '', $rut));
+        // Número = todo menos el último carácter; DV = último
+        $numero = (int) substr($clean, 0, -1);
+        $dv     = substr($clean, -1);
+        return [$numero, $dv];
+    }
+
     public function store(Request $request)
     {
-        // Lógica para almacenar la nueva habilitación
-        // Por ahora, solo redirigimos de vuelta a la página de creación
-        return redirect()->route('habilitaciones.create')->with('ok', 'Habilitación creada exitosamente.');
+        // sin validaciones, solo limpieza mínima
+        [$rutAl, $dvAl] = $this->splitRut($request->rut);
+        $id   = (int) $request->id_habilitacion;
+        $tipo = $request->tipo_HabilProf;
+
+        // PrTut => '', Proyectos => lo que venga o ''
+        $descripcion = ($tipo === 'PrTut') ? '' : ($request->descripcion ?? '');
+
+        // Profesores (si vienen en el form)
+        $rutCom = $request->rut_profesor_comision ? $this->splitRut($request->rut_profesor_comision) : null;
+        $rutCg  = $request->rut_profesor_coguia   ? $this->splitRut($request->rut_profesor_coguia)   : null;
+
+        DB::connection('pgsql2')->transaction(function () use ($request, $rutAl, $dvAl, $id, $tipo, $descripcion, $rutCom, $rutCg) {
+
+            // Alumno (BD HabilProf2, tabla exacta "Alumno")
+            DB::connection('pgsql2')->table('Alumno')->updateOrInsert(
+                ['rut_Alumno' => $rutAl, 'DV' => $dvAl],
+                [
+                    'nombre_Alumno' => $request->nombre_alumno ?? '',
+                    'carrera'       => $request->carrera ?? '',
+                    'correo_Alumno' => $request->correo_alumno ?? '',
+                ]
+            );
+
+            // Habilitación base (tabla exacta "Habilitacion_Profesional")
+            DB::connection('pgsql2')->table('Habilitacion_Profesional')->updateOrInsert(
+                ['id_Habilitacion' => $id],
+                [
+                    'rut_Alumno'      => $rutAl,
+                    'DV'              => $dvAl,
+                    'tipo_HabilProf'  => $tipo,
+                    'nota'            => null,                 // usa 0 si tu columna es NOT NULL
+                    'descripcion'     => $descripcion,         // nunca NULL
+                    'semestre_inicio' => $request->semestre_inicio ?? null,
+                ]
+            );
+
+            // Detalle por tipo (respetando nombres de tabla con mayúsculas)
+            if ($tipo === 'PrIng') {
+                DB::connection('pgsql2')->table('PrIng')->updateOrInsert(
+                    ['id_Habilitacion' => $id],
+                    ['titulo' => $request->titulo ?? '']
+                );
+            } elseif ($tipo === 'PrInv') {
+                DB::connection('pgsql2')->table('PrInv')->updateOrInsert(
+                    ['id_Habilitacion' => $id],
+                    ['titulo' => $request->titulo ?? '']
+                );
+            } elseif ($tipo === 'PrTut') {
+                DB::connection('pgsql2')->table('PrTut')->updateOrInsert(
+                    ['id_Habilitacion' => $id],
+                    [
+                        'nombre_Empresa'    => $request->nombre_Empresa ?? '',
+                        'nombre_Supervisor' => $request->nombre_Supervisor ?? '',
+                    ]
+                );
+            }
+
+            // Supervisa - Profesor Comisión
+if ($rutCom) {
+    [$rutP, $dvP] = $rutCom;
+
+    // 1) Asegurar existencia en Profesor
+    DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
+        ['rut_Profesor' => $rutP, 'DV' => $dvP],
+        [
+            'nombre_Profesor' => $request->nombre_profesor_comision ?? '',
+            'correo_Profesor' => $request->correo_profesor_comision ?? '',
+        ]
+    );
+
+    // 2) Insertar relación en Supervisa si no existe
+    $exists = DB::connection('pgsql2')->table('Supervisa')->where([
+        'id_Habilitacion' => $id,
+        'rut_Profesor'    => $rutP,
+        'DV'              => $dvP,
+    ])->exists();
+
+    if (!$exists) {
+        $nextId = (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
+
+        DB::connection('pgsql2')->table('Supervisa')->insert([
+            'id_Supervisa'    => $nextId,
+            'id_Habilitacion' => $id,
+            'rut_Profesor'    => $rutP,
+            'DV'              => $dvP,
+            'tipo_Profesor'   => 'Profesor Comisión',
+        ]);
+    }
+}
+
+// Supervisa - Profesor Co-guía
+if ($rutCg) {
+    [$rutP, $dvP] = $rutCg;
+
+    DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
+        ['rut_Profesor' => $rutP, 'DV' => $dvP],
+        [
+            'nombre_Profesor' => $request->nombre_profesor_coguia ?? '',
+            'correo_Profesor' => $request->correo_profesor_coguia ?? '',
+        ]
+    );
+
+    $exists = DB::connection('pgsql2')->table('Supervisa')->where([
+        'id_Habilitacion' => $id,
+        'rut_Profesor'    => $rutP,
+        'DV'              => $dvP,
+    ])->exists();
+
+    if (!$exists) {
+        $nextId = (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
+
+        DB::connection('pgsql2')->table('Supervisa')->insert([
+            'id_Supervisa'    => $nextId,
+            'id_Habilitacion' => $id,
+            'rut_Profesor'    => $rutP,
+            'DV'              => $dvP,
+            'tipo_Profesor'   => 'Profesor Co-guía',
+        ]);
+    }
+}
+        });
+
+        return redirect()->route('home')->with('success', 'Habilitación guardada.');
     }
 
     public function edit($id)
-{
+    {
     switch ((int) $id) {
         case 1:
             $habilitacion = [

@@ -30,144 +30,100 @@
     </style>
 </head>
 <body class="bg-light">
-     <!-- Header -->
-    <header class="ucsc-header py-2">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h4 class="mb-0">
-                        <a href="{{ route('home') }}">
-                            <img src="{{ asset('images/ucsc_logo.png') }}" alt="Logo" width="180">
-                        </a>
-                    </h4>
-                </div>
-                <div class="col-auto">
-                    <span class="me-3"><i class="bi bi-person-circle"></i> Admin_DINF</span>
-                    <button class="btn btn-sm btn-outline-light">Salir</button>
-                </div>
-            </div>
-        </div>
-    </header>
-    <div class="container py-4">
+@extends('layouts.app')
+
+@section('content')
+<div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
                 <div class="card shadow-sm">
                     <div class="card-body p-4">
-                        <h1 class="h4 mb-4">Nueva habilitación</h1>
-                        <form>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>Nueva Habilitación</h4>
+                            <a href="{{ route('home') }}" class="btn btn-secondary">← Atrás</a>
+                        </div>
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <form action="{{ route('habilitaciones.store') }}" method="POST">
+                            @csrf
+
                             <div class="row g-3">
                                 <div class="col-md-5">
-                                    <label class="form-label fw-semibold">RUT</label>
-                                    <input name="rut" value="{{ old('rut') }}" class="form-control" placeholder="Sin puntos y con número verificador" required>
+                                    <label class="form-label">RUT Alumno </label>
+                                    <input type="text" name="rut" class="form-control" placeholder="Ej: Sin puntos, con Dígito Verificador" value="{{ old('rut') }}" required>
                                 </div>
 
                                 <div class="col-md-7">
-                                    <label class="form-label fw-semibold">Nombre Alumno</label>
-                                    <input name="nombre_alumno" value="{{ old('nombre_alumno') }}" class="form-control" placeholder="Nombre Completo" required>
+                                    <label class="form-label">Nombre Alumno</label>
+                                    <input type="text" name="nombre_alumno" class="form-control" placeholder="Nombre Completo" value="{{ old('nombre_alumno') }}" required>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Carrera</label>
-                                    <input name="carrera" value="{{ old('carrera') }}" class="form-control" placeholder="Ej: Ingeniería Civil" required>
+                                    <label class="form-label">Carrera</label>
+                                    <input type="text" name="carrera" class="form-control" placeholder="Ej: Ingeniería Civil" value="{{ old('carrera') }}" required>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Correo Alumno</label>
-                                    <input name="correo_alumno" value="{{ old('correo_alumno') }}" class="form-control" placeholder="Ej: alumno@ing.ucsc.cl" required>
+                                    <label class="form-label">Correo Alumno</label>
+                                    <input type="email" name="correo_alumno" class="form-control" placeholder="Ej: maria@ing.ucsc.cl" value="{{ old('correo_alumno') }}" required>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">ID habilitación</label>
-                                    <input name="id_habilitacion" value="{{ old('id_habilitacion') }}" class="form-control" placeholder="ID de la habilitación" required>
+                                    <label class="form-label">ID Habilitación</label>
+                                    <input type="number" name="id_habilitacion" class="form-control" value="{{ old('id_habilitacion') }}" required>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Tipo de habilitación profesional</label>
+                                    <label class="form-label">Tipo Habilitación</label>
                                     <select name="tipo_HabilProf" id="tipo_HabilProf" class="form-select" required>
-                                        <option value="" selected disabled>Seleccione un tipo</option>
-                                        <option value="PrIng">Proyecto Ingeniería</option>
-                                        <option value="PrInv">Proyecto Investigación</option>
-                                        <option value="PrTut">Práctica Tutelada</option>
+                                        <option value="" disabled selected>Seleccione un tipo</option>
+                                        <option value="Pring" {{ old('tipo_HabilProf')=='Pring' ? 'selected':'' }}>Proyecto Ingeniería</option>
+                                        <option value="Prinv" {{ old('tipo_HabilProf')=='Prinv' ? 'selected':'' }}>Proyecto Investigación</option>
+                                        <option value="PrTut" {{ old('tipo_HabilProf')=='PrTut' ? 'selected':'' }}>Práctica Tutelada</option>
                                     </select>
                                 </div>
 
-                                 <!-- Grupo para PrIng/PrInv -->
-                                <div id="grupoProyecto" class="mt-4" hidden>
-                                    <hr class="my-3">
-                                    <h2 class="h6 mb-3">Datos de proyecto (PrIng/PrInv)</h2>
+                                <!-- Datos Pring / Prinv -->
+                                <div id="grupoProyecto" class="col-12 mt-3" style="display:none;">
+                                    <label>Título</label>
+                                    <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}">
 
-                                    <div class="row g-3">
-                                        <div class="col-12">
-                                            <label class="form-label fw-semibold">Título</label>
-                                            <input name="titulo" id="titulo" class="form-control" maxlength="100"
-                                                   placeholder="Solo letras y espacios (Máx. 100 carácteres)"
-                                                   pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,100}$">
-                                            <div class="invalid-feedback">Título inválido.</div>
-                                        </div>
+                                    <label class="mt-2">Descripción</label>
+                                    <textarea name="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
 
-                                        <div class="col-12">
-                                            <label class="form-label fw-semibold">Descripción</label>
-                                            <textarea name="descripcion" id="descripcion" class="form-control" rows="4" maxlength="500"
-                                                placeholder="Solo letras y espacios (máx 500)"></textarea>
-                                            <div class="invalid-feedback">Descripción requerida.</div>
-                                        </div>
+                                    <label class="mt-2">RUT Profesor Comisión</label>
+                                    <input type="text" name="rut_profesor_comision" class="form-control" value="{{ old('rut_profesor_comision') }}">
 
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold">RUT Profesor Comisión (obligatorio)</label>
-                                            <input name="rut_profesor_comision" id="rut_profesor_comision" class="form-control"
-                                                placeholder="Sin puntos y con número verificador" pattern="^\d{7,8}-[\dkK]$">
-                                            <div class="invalid-feedback">RUT inválido u omitido.</div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold">RUT Profesor Co-guía (opcional)</label>
-                                            <input name="rut_profesor_coguia" id="rut_profesor_coguia" class="form-control"
-                                                placeholder="Sin puntos y con número verificador" pattern="^\d{7,8}-[\dkK]$">
-                                            <div class="invalid-feedback">RUT inválido.</div>
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <label class="form-label fw-semibold">Semestre de inicio</label>
-                                            <input name="semestre_inicio" id="semestre_inicio" class="form-control" placeholder="AAAA-S"
-                                                pattern="^(1990|199[1-9]|20[0-3][0-9]|204[0-5])-[12]$">
-                                            <div class="invalid-feedback">Formato inválido (ej: 2025-1).</div>
-                                        </div>
-                                    </div>
+                                    <label class="mt-2">RUT Profesor Co-guía (opcional)</label>
+                                    <input type="text" name="rut_profesor_coguia" class="form-control" value="{{ old('rut_profesor_coguia') }}">
                                 </div>
 
-                                <!-- Grupo para PrTut -->
-                                <div id="grupoPractica" class="mt-4" hidden>
-                                    <hr class="my-3">
-                                    <h2 class="h6 mb-3">Datos de práctica (PrTut)</h2>
+                                <!-- Datos PrTut -->
+                                <div id="grupoPractica" class="col-12 mt-3" style="display:none;">
+                                    <label>Nombre Empresa</label>
+                                    <input type="text" name="nombre_Empresa" class="form-control" value="{{ old('nombre_Empresa') }}">
 
-                                    <div class="row g-3">
-                                      <div class="col-md-7">
-                                        <label class="form-label fw-semibold">Nombre Empresa</label>
-                                        <input name="nombre_Empresa" id="nombre_Empresa" class="form-control" maxlength="100"
-                                               placeholder="Solo letras y espacios (Máx. 100 carácteres)"
-                                               pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,100}$">
-                                        <div class="invalid-feedback">Nombre inválido.</div>
-                                      </div>
-
-                                      <div class="col-md-5">
-                                        <label class="form-label fw-semibold">Nombre Supervisor</label>
-                                        <input name="nombre_Supervisor" id="nombre_Supervisor" class="form-control" maxlength="80"
-                                           placeholder="Solo letras y espacios (Máx. 80 carácteres)"
-                                           pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,80}$">
-                                            <div class="invalid-feedback">Nombre inválido.</div>
-                                        </div>
-                                    </div>
+                                    <label class="mt-2">Nombre Supervisor Empresa</label>
+                                    <input type="text" name="nombre_Supervisor" class="form-control" value="{{ old('nombre_Supervisor') }}">
                                 </div>
 
-                            <div class="d-flex gap-2 mt-4">
-                                <a href="{{ route('home') }}" class="btn btn-outline-secondary">Cancelar</a>
-                                <button type="submit" class="btn btn-primary">Guardar habilitación</button>
+                                <div class="col-md-6 mt-3">
+                                    <label>Semestre Inicio (puede quedar vacío)</label>
+                                    <input type="text" name="semestre_inicio" class="form-control" value="{{ old('semestre_inicio') }}" placeholder="Ej: 2025-1">
+                                </div>
                             </div>
-                        </form>
 
-                      <div class="alert alert-info mt-3 mb-0">
-                        Mockup: los datos no se guardan; al validar redirige a la página principal.
-                      </div>
+                            <button type="submit" class="btn btn-primary mt-3">Guardar Habilitación</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -177,7 +133,32 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/habilitaciones.create.js') }}"></script>
+
+    <script>
+        const tipoSelect = document.getElementById('tipo_HabilProf');
+        const grupoProyecto = document.getElementById('grupoProyecto');
+        const grupoPractica = document.getElementById('grupoPractica');
+
+        tipoSelect.addEventListener('change', function() {
+            if(this.value === 'Pring' || this.value === 'Prinv'){
+                grupoProyecto.style.display = 'block';
+                grupoPractica.style.display = 'none';
+            } else if(this.value === 'PrTut'){
+                grupoProyecto.style.display = 'none';
+                grupoPractica.style.display = 'block';
+            } else {
+                grupoProyecto.style.display = 'none';
+                grupoPractica.style.display = 'none';
+            }
+        });
+
+        // Mostrar grupo correcto si hay old()
+        window.addEventListener('load', function() {
+            const tipo = tipoSelect.value;
+            if(tipo === 'Pring' || tipo === 'Prinv') grupoProyecto.style.display = 'block';
+            if(tipo === 'PrTut') grupoPractica.style.display = 'block';
+        });
+    </script>
+    @endsection
 </body>
 </html>
