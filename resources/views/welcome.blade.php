@@ -38,29 +38,6 @@
     </style>
 </head>
 
-<!-- Modal eliminacion -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                ¿Estás seguro de eliminar la habilitación de <strong id="deleteItemName"></strong>?<br>
-               
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <a id="confirmDeleteBtn" href="{{ route('home') }}" class="btn btn-danger">
-                    Eliminar
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <body>
     <!-- Header -->
     <header class="ucsc-header py-2">
@@ -83,9 +60,6 @@
         <div class="col-md-9 col-lg-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4>Gestión de Habilitaciones Profesionales</h4>
-                <div class="sync-status text-success">
-                    <i class="bi bi-check-circle-fill"></i> Sincronizado hace 30s
-                </div>
             </div>
 
             <!-- Stats Cards -->
@@ -93,16 +67,15 @@
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">📊 45</h5>
+                            <h5 class="card-title">📊 {{ $total }}</h5>
                             <p class="card-text">Habilitaciones Activas</p>
-                            <small class="text-success">+5 este semestre</small>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">🔧 25</h5>
+                            <h5 class="card-title">🔧 {{$countPring}}</h5>
                             <p class="card-text">Proyecto Ingeniería</p>
                         </div>
                     </div>
@@ -110,7 +83,7 @@
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">📚 12</h5>
+                            <h5 class="card-title">📚 {{$countPrinv}}</h5>
                             <p class="card-text">Proyecto Investigación</p>
                         </div>
                     </div>
@@ -118,7 +91,7 @@
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">👥 8</h5>
+                            <h5 class="card-title">👥 {{$countPrTut}}</h5>
                             <p class="card-text">Práctica Tutelada</p>
                         </div>
                     </div>
@@ -126,111 +99,139 @@
             </div>
 
             <!-- Search and Actions -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Buscar por RUT alumno...">
-                        <button class="btn btn-outline-secondary" type="button">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select">
-                        <option>Todas las modalidades</option>
-                        <option>Proyecto Ingeniería</option>
-                        <option>Proyecto Investigación</option>
-                        <option>Práctica Tutelada</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <a href="{{ route('habilitaciones.create') }}" class="btn btn-primary"><i
-                            class="bi bi-plus-circle"></i> Nueva habilitación</a>
-                </div>
+            <div class="d-flex mb-4">
+                <a href="{{ route('habilitaciones.create') }}" class="btn btn-primary me-2">
+                    <i class="bi bi-plus-circle"></i> Nueva habilitación
+                </a>
+                <a href="{{ route('habilitaciones.HistoricoForm') }}" class="btn btn-primary me-2">
+                    <i class="bi bi-list-ul"></i> Listados Habilitación
+                </a>
+                <a href="{{ route('habilitaciones.ProfesorForm') }}" class="btn btn-primary">
+                    <i class="bi bi-list-ul"></i> Listado Habilitaciones por Profesor
+                </a>
             </div>
 
-            <!-- Table -->
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-table me-2"></i>Habilitaciones Registradas</h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>RUT Alumno</th>
-                                    <th>Nombre Alumno</th>
-                                    <th>Modalidad</th>
-                                    <th>Profesor Guía</th>
-                                    <th>Semestre</th>
-                                    <th>Nota</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>12.345.678-9</td>
-                                    <td>María González</td>
-                                    <td><span class="badge bg-primary">PrIng</span></td>
-                                    <td>Dr. Pérez</td>
-                                    <td>2025-1</td>
-                                    <td><strong>6.5</strong></td>
-                                    <td>
-                                        <a href="{{ route('habilitaciones.edit', ['id' => 1]) }}"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                            data-bs-target="#confirmDeleteModal" data-id="1" data-nombre="María González">
-                                            <i class="bi bi-trash3"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>23.456.789-0</td>
-                                    <td>Carlos López</td>
-                                    <td><span class="badge bg-success">PrTut</span></td>
-                                    <td>Dra. Ríos</td>
-                                    <td>2025-1</td>
-                                    <td>-</td>
-                                    <td>
-                                        <a href="{{ route('habilitaciones.edit', ['id' => 2]) }}"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                            data-bs-target="#confirmDeleteModal" data-id="2" data-nombre="Carlos López">
-                                            <i class="bi bi-trash3"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>34.567.890-1</td>
-                                    <td>Ana Silva</td>
-                                    <td><span class="badge bg-warning">PrInv</span></td>
-                                    <td>Dr. Muñoz</td>
-                                    <td>2025-1</td>
-                                    <td><strong>5.8</strong></td>
-                                    <td>
-                                        {{-- fila 3 --}}
-                                        <a href="{{ route('habilitaciones.edit', ['id' => 3]) }}"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                            data-bs-target="#confirmDeleteModal" data-id="3" data-nombre="Ana Silva">
-                                            <i class="bi bi-trash3"></i>
-                                        </a>
-                                    </td>
+        </div>
+    </div>
 
-                                </tr>
-                            </tbody>
-                        </table>
+    <!-- Table -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="bi bi-table me-2"></i>Habilitaciones Registradas</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>RUT Alumno</th>
+                            <th>Nombre Alumno</th>
+                            <th>Modalidad</th>
+                            <th>Semestre</th>
+                            <th>Nota</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th> {{-- nueva columna --}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($ultimas as $h)
+                            <tr>
+                                <td>{{ $h->rut_Alumno }}-{{ $h->DV }}</td>
+                                <td>{{ $h->nombre_Alumno }}</td>
+                                <td>{{ $h->tipo_HabilProf }}</td>
+                                <td>{{ $h->semestre_inicio }}</td>
+                                <td>{{ $h->nota ?? '-' }}</td>
+                                <td>{{ $h->descripcion ?? '-' }}</td>
+
+                                <td>
+                                    <a href="{{ route('habilitaciones.edit', ['id' => 1]) }}"
+                                        class="btn btn-sm btn-primary">
+                                        Editar
+                                    </a>
+
+                                    <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                        data-bs-target="#confirmDeleteModal" data-id="1">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">No hay habilitaciones recientes</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                <!-- Modal de confirmación de eliminación -->
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Seguro que deseas eliminar <strong id="deleteItemName">este registro</strong>?
+                                <p class="text-muted small mb-0 mt-2">(Esto es solo una simulación, no eliminará
+                                    nada aún.)</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal de edición (mockup) -->
+                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="editModalLabel">Editar habilitación</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Aquí puedes mostrar datos falsos o de ejemplo -->
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">Nombre Alumno</label>
+                                            <input type="text" class="form-control" value="Ejemplo Alumno" disabled>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">Tipo Habilitación</label>
+                                            <select class="form-select">
+                                                <option>PrIng</option>
+                                                <option>PrInv</option>
+                                                <option>PrTut</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label fw-semibold">Descripción</label>
+                                            <textarea class="form-control" rows="3">Texto de ejemplo</textarea>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Guardar
+                                    cambios</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
     </div>
 
@@ -250,5 +251,16 @@
     </script>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('confirmDeleteModal');
+
+        modalEl.addEventListener('show.bs.modal', function (event) {
+            const btn = event.relatedTarget;
+            const nombre = btn.getAttribute('data-nombre') || 'este registro';
+            modalEl.querySelector('#deleteItemName').textContent = nombre;
+        });
+    });
+</script>
 
 </html>
