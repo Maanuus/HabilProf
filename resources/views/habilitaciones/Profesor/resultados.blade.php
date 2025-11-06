@@ -29,7 +29,7 @@
                         <tbody>
                             @foreach($habilitaciones as $h)
                                 <tr>
-                                    <td>{{ $h->rut_Alumno }}</td>
+                                    <td>{{ $h->rut_Alumno }}-{{ $h->DV }}</td></td>
                                     <td>{{ $h->nombre_Alumno }}</td>
                                     <td>{{ $h->tipo_HabilProf }}</td>
                                     <td>{{ $h->semestre_inicio }}</td>

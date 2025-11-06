@@ -39,6 +39,7 @@ class HabilitacionProfesorController extends Controller
                 'Profesor.nombre_Profesor',
                 'Supervisa.tipo_Profesor',
                 'Alumno.rut_Alumno',
+                'Alumno.DV',
                 'Alumno.nombre_Alumno',
                 'Habilitacion_Profesional.tipo_HabilProf',
                 'Habilitacion_Profesional.semestre_inicio'
