@@ -19,48 +19,66 @@ class HabilitacionController extends Controller
     }
 
     public function edit($id)
-{
-    switch ((int) $id) {
-        case 1:
-            $habilitacion = [
-                'id_habilitacion' => 1,
-                'rut' => '12.345.678-9',
-                'nombre_alumno' => 'María González',
-                'carrera' => 'Ingeniería Civil Informática',
-                'correo_alumno' => 'maria@ucsc.cl',
-                'tipo_HabilProf' => 'PrIng',
-                'titulo' => 'Sistema de Monitoreo Energético',
-                'descripcion' => 'Proyecto sobre eficiencia energética en hogares.',
-                'rut_profesor_comision' => '11111111-1',
-                'rut_profesor_coguia' => '',
-                'semestre_inicio' => '2025-1',
-                'nombre_Empresa' => '',
-                'nombre_Supervisor' => '',
-            ];
-            break;
+    {
+        // cada habilitacion del home
+        switch ((int) $id) {
+            case 1:
+                $habilitacion = [
+                    'id_habilitacion' => 1,
+                    'rut' => '12.345.678-9',
+                    'nombre_alumno' => 'María González',
+                    'carrera' => 'Ingeniería Civil Informática',
+                    'correo_alumno' => 'maria@ucsc.cl',
+                    'tipo_HabilProf' => 'PrIng',
+                    'titulo' => 'Sistema de Monitoreo Energético',
+                    'descripcion' => 'Proyecto sobre eficiencia energética en hogares.',
+                    'rut_profesor_comision' => '11111111-1',
+                    'rut_profesor_coguia' => '',
+                    'semestre_inicio' => '2025-1',
+                    'nombre_Empresa' => '',
+                    'nombre_Supervisor' => '',
+                ];
+                break;
 
-        default:
-            // Datos por defecto si el id no existe en el switch
-            $habilitacion = [
-                'id_habilitacion' => $id,
-                'rut' => '12345678-9',
-                'nombre_alumno' => 'Juan Pérez',
-                'carrera' => 'Ingeniería Civil Informática',
-                'correo_alumno' => 'juan.perez@alumnos.ucsc.cl',
-                'tipo_HabilProf' => 'PrIng',
-                'titulo' => 'Sistema de Gestión de Prácticas',
-                'descripcion' => 'Desarrollo de un sistema web para gestión de prácticas profesionales.',
-                'rut_profesor_comision' => '11111111-1',
-                'rut_profesor_coguia' => '22222222-2',
-                'semestre_inicio' => '2025-1',
-                'nombre_Empresa' => '',
-                'nombre_Supervisor' => '',
-            ];
-            break;
+            case 2:
+                $habilitacion = [
+                    'id_habilitacion' => 2,
+                    'rut' => '23.456.789-0',
+                    'nombre_alumno' => 'Carlos López',
+                    'carrera' => 'Ingeniería Civil',
+                    'correo_alumno' => 'carlos@ucsc.cl',
+                    'tipo_HabilProf' => 'PrTut',
+                    'titulo' => '',
+                    'descripcion' => '',
+                    'rut_profesor_comision' => '',
+                    'rut_profesor_coguia' => '',
+                    'semestre_inicio' => '2025-1',
+                    'nombre_Empresa' => 'Tech Solutions SpA',
+                    'nombre_Supervisor' => 'Sofía Ríos',
+                ];
+                break;
+
+            case 3:
+                $habilitacion = [
+                    'id_habilitacion' => 3,
+                    'rut' => '34.567.890-1',
+                    'nombre_alumno' => 'Ana Silva',
+                    'carrera' => 'Ingeniería Informática',
+                    'correo_alumno' => 'ana.silva@ucsc.cl',
+                    'tipo_HabilProf' => 'PrInv',
+                    'titulo' => 'Análisis de Redes Neuronales',
+                    'descripcion' => 'Estudio comparativo de modelos CNN para clasificación.',
+                    'rut_profesor_comision' => '22222222-2',
+                    'rut_profesor_coguia' => '33333333-3',
+                    'semestre_inicio' => '2025-1',
+                    'nombre_Empresa' => '',
+                    'nombre_Supervisor' => '',
+                ];
+                break;
+        }
+
+        return view('habilitaciones.edit', compact('habilitacion'));
     }
-
-    return view('habilitaciones.edit', compact('habilitacion'));
-}
 
     public function update(Request $request, $id)
     {
@@ -68,3 +86,4 @@ class HabilitacionController extends Controller
         return redirect()->route('home')->with('ok', "Habilitacion #$id actualizada (mock).");
     }
 }
+

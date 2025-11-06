@@ -83,46 +83,18 @@ return [
             ]) : [],
         ],
 
-       // Base de datos principal HabilProf
         'pgsql' => [
             'driver' => 'pgsql',
+            'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'HabilProf'),   
-            'username' => env('DB_USERNAME', 'postgres'),     
-            'password' => env('DB_PASSWORD', 'Elvis2808199356*'),       
-            'charset' => 'utf8',
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => 'prefer',
-        ],
-
-        // Base de pruebas HabilProf2
-        'pgsql2' => [
-            'driver' => 'pgsql',
-            'host' => env('DB_PGSQL2_HOST', '127.0.0.1'),
-            'port' => env('DB_PGSQL2_PORT', '5432'),
-            'database' => env('DB_PGSQL2_DATABASE', 'HabilProf2'),
-            'username' => env('DB_PGSQL2_USERNAME', 'postgres'),
-            'password' => env('DB_PGSQL2_PASSWORD', 'Elvis2808199356*'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'schema' => 'public',
-            'sslmode' => 'prefer',
-        ],
-
-        // Base de origen Alumnos
-        'alumnos' => [
-            'driver' => 'pgsql',
-            'host' => env('DB_ALUMNOS_HOST', '127.0.0.1'),
-            'port' => env('DB_ALUMNOS_PORT', '5432'),
-            'database' => env('DB_ALUMNOS_DATABASE', 'Alumno'),
-            'username' => env('DB_ALUMNOS_USERNAME', 'postgres'),
-            'password' => env('DB_ALUMNOS_PASSWORD', 'Elvis2808199356*'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'schema' => 'public',
             'sslmode' => 'prefer',
         ],
 
