@@ -9,7 +9,7 @@
             $nombreProfesor = $resultados->first()->first()->nombre_Profesor ?? '';
         @endphp
      
-        <h3>El profesor <strong>{{ $nombreProfesor }}</strong> está a cargo de:</h3>
+        <h3>Historial de Habilitaciones Profesor: <strong>{{ $nombreProfesor }}</strong></h3>
          
         @foreach($resultados as $tipo => $habilitaciones)
             <div class="card my-4">
