@@ -12,6 +12,20 @@ class HabilitacionProfesorController extends Controller
         return view('habilitaciones.profesor.form');
     }
 
+    public function validar_rut($rut): bool
+    {
+        return preg_match  ( "/^[1-9][0-9]{6,7}$/",$rut);
+    }
+    public function validar_DV($DV): bool
+    {
+        return preg_match ("/^[1-9Kk]$/", $DV);
+    }
+    public function validar_semestre($semestre_inicio):bool
+    {
+        return preg_match  ( "/^(199[0-9]|20[0-3][0-9]|204[0-5])-(1|2)$/", $semestre_inicio);
+    }
+    
+
     public function resultados(Request $request)
     {
         $request->validate([
@@ -19,6 +33,8 @@ class HabilitacionProfesorController extends Controller
             'dv' => 'required|string|max:1',
             'semestre_inicio' => 'required'
         ]);
+
+       
 
         $rut_profesor = $request->rut_profesor;
         $dv = $request->dv;
@@ -46,6 +62,8 @@ class HabilitacionProfesorController extends Controller
             )
             ->where('Supervisa.rut_Profesor', $rut_profesor)
             ->where('Supervisa.DV', $dv);
+
+            
 
         // Aquí aplicamos el filtro del semestre según el checkbox
         if ($solo_semestre) {
