@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HabilitacionController;
 use App\Http\Controllers\HabilitacionListadosController;
 use App\Http\Controllers\HabilitacionProfesorController;
+use App\Http\Controllers\AdminPanelController;
 
 // Página principal
 Route::get('/home', [HabilitacionListadosController::class, 'ultimasHabilitaciones'])
@@ -28,6 +29,12 @@ Route::post('/habilitaciones/historico', [HabilitacionListadosController::class,
 // Editar habilitación
 Route::get('/habilitaciones/{id}/editar', [HabilitacionController::class, 'edit'])
     ->name('habilitaciones.edit');
+
+// Panel de administración: ver incompletos y ejecutar sincronización
+Route::get('/admin/panel', [AdminPanelController::class, 'panel'])
+    ->name('admin.panel');
+Route::post('/admin/sync', [AdminPanelController::class, 'ejecutarSync'])
+    ->name('admin.sync');
 Route::put('/habilitaciones/{id}', [HabilitacionController::class, 'update'])
     ->name('habilitaciones.update');
 

@@ -47,8 +47,11 @@
                     <h4 class="mb-0"><a href=""><img src="{{ asset('images/ucsc_logo.png') }}" alt="Logo" width=180></a>
                     </h4>
                 </div>
-                <div class="col-auto">
-                    <span class="me-3"><i class="bi bi-person-circle"></i> Admin_DINF</span>
+                <div class="col-auto d-flex align-items-center gap-2">
+                    <span class="me-2"><i class="bi bi-person-circle"></i> Admin_DINF</span>
+                    <a href="{{ route('admin.panel') }}" class="btn btn-sm btn-light text-dark">
+                        <i class="bi bi-gear-fill"></i> Admin
+                    </a>
                     <button class="btn btn-sm btn-outline-light">Salir</button>
                 </div>
             </div>

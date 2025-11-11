@@ -44,10 +44,8 @@
                         </a>
                     </h4>
                 </div>
-                <div class="col-auto">
-                    <span class="me-3"><a href="{{ url('/home') }}" class="btn btn-sm btn-outline-light">
-    Inicio
-</a>
+                <div class="col-auto d-flex align-items-center gap-2">
+                    <a href="{{ url('/home') }}" class="btn btn-sm btn-outline-light">Inicio</a>
                 </div>
             </div>
         </div>
