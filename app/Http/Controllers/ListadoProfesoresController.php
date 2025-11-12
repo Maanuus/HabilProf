@@ -4,42 +4,47 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\Validaciones;
+use Illuminate\Validation\ValidationException;
 
-class HabilitacionProfesorController extends Controller
+class ListadoProfesoresController extends Controller
 {
-    public function form()
+    public function ListadoProfesores()
     {
-        return view('habilitaciones.profesor.form');
+        return view('habilitaciones.Listados.FormularioProfesor');
     }
 
-    public function validar_rut($rut): bool
+    public function ResultadoListadoProfesores(Request $request)
     {
-        return preg_match  ( "/^[1-9][0-9]{6,7}$/",$rut);
-    }
-    public function validar_DV($DV): bool
-    {
-        return preg_match ("/^[1-9Kk]$/", $DV);
-    }
-    public function validar_semestre($semestre_inicio):bool
-    {
-        return preg_match  ( "/^(199[0-9]|20[0-3][0-9]|204[0-5])-(1|2)$/", $semestre_inicio);
-    }
-    
 
-    public function resultados(Request $request)
-    {
         $request->validate([
             'rut_profesor' => 'required|integer',
             'dv' => 'required|string|max:1',
             'semestre_inicio' => 'required'
         ]);
+    
+        $errores = [];
 
-       
+        if (!Validaciones::validar_rut($request->rut_profesor)) {
+            $errores['rut_profesor'] = 'El RUT debe tener entre 7 y 8 dígitos numéricos.';
+        }
+
+        if (!Validaciones::validar_DV($request->dv)) {
+            $errores['dv'] = 'El dígito verificador ingresado no es válido.';
+        }
+
+        if (!Validaciones::validar_semestre($request->semestre_inicio)) {
+            $errores['semestre_inicio'] = 'El formato del semestre debe ser, por ejemplo, 2024-1.';
+        }
+
+        if (!empty($errores)) {
+            throw ValidationException::withMessages($errores);
+        }
 
         $rut_profesor = $request->rut_profesor;
         $dv = $request->dv;
         $semestre = $request->semestre_inicio;
-        $solo_semestre = $request->has('solo_semestre'); // <- checkbox
+        $solo_semestre = $request->has('solo_semestre'); // checkbox
 
         $query = DB::connection('pgsql2')->table('Supervisa')
             ->join('Profesor', function ($join) {
@@ -63,9 +68,7 @@ class HabilitacionProfesorController extends Controller
             ->where('Supervisa.rut_Profesor', $rut_profesor)
             ->where('Supervisa.DV', $dv);
 
-            
-
-        // Aquí aplicamos el filtro del semestre según el checkbox
+ 
         if ($solo_semestre) {
             $query->where('Habilitacion_Profesional.semestre_inicio', '=', $semestre);
         } else {
@@ -78,7 +81,7 @@ class HabilitacionProfesorController extends Controller
             ->get()
             ->groupBy('tipo_Profesor');
 
-        return view('habilitaciones.profesor.resultados', [
+        return view('habilitaciones.Listados.ResultadosProfesor', [
             'resultados' => $resultados
         ]);
     }

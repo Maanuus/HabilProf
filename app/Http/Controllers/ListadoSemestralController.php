@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HabilitacionListadosController extends Controller
+class ListadoSemestralController extends Controller
 {
-    // Muestra el formulario para filtrar por semestre
-    public function historicoForm()
+   
+    public function ListadoSemestral()
     {
-        return view('habilitaciones.historicoForm'); // Creamos esta vista
+        return view('habilitaciones.Listados.FormularioSemestral'); // Creamos esta vista
     }
 
-    // Procesa el formulario y muestra los resultados
-    public function historicoResultados(Request $request)
+
+    public function ResultadoListadoSemestral(Request $request)
     {
         $request->validate([
             'semestre_inicio' => [
@@ -56,7 +56,7 @@ class HabilitacionListadosController extends Controller
 
         $habilitaciones = $query->orderBy('Habilitacion_Profesional.semestre_inicio', 'asc')->get();
 
-        return view('habilitaciones.HistoricoResultados', compact('habilitaciones', 'semestre_inicio', 'solo_semestre'));
+        return view('habilitaciones.Listados.ResultadoSemestral', compact('habilitaciones', 'semestre_inicio', 'solo_semestre'));
     }
 
 
@@ -77,7 +77,7 @@ class HabilitacionListadosController extends Controller
             ->orderBy('Habilitacion_Profesional.semestre_inicio', 'desc') // últimas primero
             ->limit(5) // solo las 5 últimas
             ->get();
-        // Conteos por tipo considerando solo activas
+        // Conteo
         $countPring = DB::connection('pgsql2')
             ->table('Habilitacion_Profesional')
             ->where('tipo_HabilProf', 'Pring')

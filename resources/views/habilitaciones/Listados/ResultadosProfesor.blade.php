@@ -29,7 +29,7 @@
                         <tbody>
                             @foreach($habilitaciones as $h)
                                 <tr>
-                                    <td>{{ $h->rut_Alumno }}-{{ $h->DV }}</td></td>
+                                    <td>{{ $h->rut_Alumno }}-{{ $h->DV }}</td>
                                     <td>{{ $h->nombre_Alumno }}</td>
                                     <td>{{ $h->tipo_HabilProf }}</td>
                                     <td>{{ $h->semestre_inicio }}</td>
@@ -41,7 +41,7 @@
             </div>
         @endforeach
     @endif
-    <a href="{{ route('habilitaciones.ProfesorForm') }}" class="btn btn-secondary">
+    <a href="{{ route('habilitaciones.FormularioProfesor') }}" class="btn btn-secondary">
                 ← Atrás
             </a>
 </div>

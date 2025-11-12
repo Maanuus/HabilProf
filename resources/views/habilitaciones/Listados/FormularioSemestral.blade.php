@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h4>Listado Histórico de Habilitaciones</h4>
 
-    <form action="{{ route('habilitaciones.HistoricoResultados') }}" method="POST">
+    <form action="{{ route('habilitaciones.ResultadoSemestral') }}" method="POST">
         @csrf
 
         <div class="mb-3 col-md-3">

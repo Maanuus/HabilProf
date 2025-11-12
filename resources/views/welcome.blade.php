@@ -103,10 +103,10 @@
                 <a href="{{ route('habilitaciones.create') }}" class="btn btn-primary me-2">
                     <i class="bi bi-plus-circle"></i> Nueva habilitación
                 </a>
-                <a href="{{ route('habilitaciones.HistoricoForm') }}" class="btn btn-primary me-2">
+                <a href="{{ route('habilitaciones.FormularioSemestral') }}" class="btn btn-primary me-2">
                     <i class="bi bi-list-ul"></i> Listados Habilitación
                 </a>
-                <a href="{{ route('habilitaciones.ProfesorForm') }}" class="btn btn-primary">
+                <a href="{{ route('habilitaciones.FormularioProfesor') }}" class="btn btn-primary">
                     <i class="bi bi-list-ul"></i> Listado Habilitaciones por Profesor
                 </a>
             </div>
@@ -163,6 +163,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                <!-- Constanza -->
                 <!-- Modal de confirmación de eliminación -->
                 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel"
                     aria-hidden="true">
