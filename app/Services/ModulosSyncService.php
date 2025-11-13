@@ -56,14 +56,8 @@ class ModulosSyncService
             'errores' => [],
         ];
 
-        // Alumnos
-        $alumnos = DB::connection('pgsql2')->table('Alumno')
-            ->where(function ($q) {
-                $q->whereNull('nombre_Alumno')->orWhere('nombre_Alumno', '')
-                  ->orWhereNull('carrera')->orWhere('carrera', '')
-                  ->orWhereNull('correo_Alumno')->orWhere('correo_Alumno', '');
-            })
-            ->get();
+        // Alumnos: Obtener TODOS los alumnos de HabilProf2, no solo incompletos
+        $alumnos = DB::connection('pgsql2')->table('Alumno')->get();
 
         foreach ($alumnos as $a) {
             $mod = DB::connection('Modulos')->table('Alumno')
@@ -72,18 +66,24 @@ class ModulosSyncService
                 ->first();
 
             if (!$mod) {
-                $res['errores'][] = "Alumno {$a->rut_Alumno}-{$a->DV} no existe en Modulos";
+                // Si no existe en Modulos, registrar pero no es error crítico
                 continue;
             }
 
             $update = [];
-            if (empty($a->nombre_Alumno) && !empty($mod->nombre_Alumno)) {
+            
+            // Actualizar nombre si es diferente en Modulos
+            if (!empty($mod->nombre_Alumno) && $mod->nombre_Alumno !== $a->nombre_Alumno) {
                 $update['nombre_Alumno'] = $mod->nombre_Alumno;
             }
-            if (empty($a->carrera) && !empty($mod->carrera)) {
+            
+            // Actualizar carrera si es diferente en Modulos
+            if (!empty($mod->carrera) && $mod->carrera !== $a->carrera) {
                 $update['carrera'] = $mod->carrera;
             }
-            if (empty($a->correo_Alumno) && !empty($mod->correo_Alumno)) {
+            
+            // Actualizar correo si es diferente en Modulos y es válido
+            if (!empty($mod->correo_Alumno) && $mod->correo_Alumno !== $a->correo_Alumno) {
                 if ($this->validarCorreoIng($mod->correo_Alumno)) {
                     $update['correo_Alumno'] = $mod->correo_Alumno;
                 }
@@ -98,13 +98,8 @@ class ModulosSyncService
             }
         }
 
-        // Profesores
-        $profesores = DB::connection('pgsql2')->table('Profesor')
-            ->where(function ($q) {
-                $q->whereNull('nombre_Profesor')->orWhere('nombre_Profesor', '')
-                  ->orWhereNull('correo_Profesor')->orWhere('correo_Profesor', '');
-            })
-            ->get();
+        // Profesores: Obtener TODOS los profesores de HabilProf2, no solo incompletos
+        $profesores = DB::connection('pgsql2')->table('Profesor')->get();
 
         foreach ($profesores as $p) {
             $modP = DB::connection('Modulos')->table('Profesor')
@@ -113,15 +108,19 @@ class ModulosSyncService
                 ->first();
 
             if (!$modP) {
-                $res['errores'][] = "Profesor {$p->rut_Profesor}-{$p->DV} no existe en Modulos";
+                // Si no existe en Modulos, continuar
                 continue;
             }
 
             $update = [];
-            if (empty($p->nombre_Profesor) && !empty($modP->nombre_Profesor)) {
+            
+            // Actualizar nombre si es diferente en Modulos
+            if (!empty($modP->nombre_Profesor) && $modP->nombre_Profesor !== $p->nombre_Profesor) {
                 $update['nombre_Profesor'] = $modP->nombre_Profesor;
             }
-            if (empty($p->correo_Profesor) && !empty($modP->correo_Profesor)) {
+            
+            // Actualizar correo si es diferente en Modulos y es válido
+            if (!empty($modP->correo_Profesor) && $modP->correo_Profesor !== $p->correo_Profesor) {
                 if ($this->validarCorreoUcsc($modP->correo_Profesor)) {
                     $update['correo_Profesor'] = $modP->correo_Profesor;
                 }

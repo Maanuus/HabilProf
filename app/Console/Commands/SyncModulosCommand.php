@@ -45,12 +45,30 @@ class SyncModulosCommand extends Command
             $notas = $sync->sincronizarNotas();
             $this->line("✓ Notas sincronizadas: {$notas['total_notas']} (Aprobadas: {$notas['aprobadas']}, Reprobadas: {$notas['reprobadas']})");
 
+            // Guardar resultado en cache para mostrar en las vistas
+            \Cache::put('last_sync_notification', [
+                'timestamp' => now()->format('Y-m-d H:i:s'),
+                'alumnos' => $incompletos['alumnos_actualizados'],
+                'profesores' => $incompletos['profesores_actualizados'],
+                'notas_total' => $notas['total_notas'],
+                'notas_aprobadas' => $notas['aprobadas'],
+                'notas_reprobadas' => $notas['reprobadas'],
+                'errores' => $incompletos['errores'],
+            ], now()->addMinutes(5)); // Disponible por 5 minutos
+
             $this->info('Sincronización completada exitosamente.');
             return 0;
 
         } catch (\Exception $e) {
             $this->error('Error durante la sincronización: ' . $e->getMessage());
             \Log::error('SyncModulosCommand error', ['exception' => $e]);
+            
+            // Guardar error en cache
+            \Cache::put('last_sync_notification', [
+                'timestamp' => now()->format('Y-m-d H:i:s'),
+                'error' => $e->getMessage(),
+            ], now()->addMinutes(5));
+            
             return 1;
         }
     }

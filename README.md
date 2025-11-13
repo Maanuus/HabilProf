@@ -36,6 +36,8 @@ cd HabilProf
 cp .env.example .env
 
 php artisan key:generate
+
+php artisan schedule:work
 ```
 
 Para ejecutar el proyecto se deben abrir dos terminales.

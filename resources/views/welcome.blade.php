@@ -61,6 +61,8 @@
     <div class="container-fluid">
         <!-- Main Content -->
         <div class="col-md-9 col-lg-10 p-4">
+            @include('partials._sync_notification')
+            
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4>Gestión de Habilitaciones Profesionales</h4>
             </div>
