@@ -4,7 +4,12 @@
 <div class="container py-4">
     @include('partials._sync_notification')
     
-    <h3 class="mb-3">Panel Administración - Sincronización Modulos</h3>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Panel Administración - Sincronización Modulos</h3>
+        <a href="{{ route('admin.sync-history') }}" class="btn btn-info">
+            <i class="bi bi-clock-history"></i> Ver Historial de Cambios
+        </a>
+    </div>
 
     @if(session('sync_result'))
         @php $r = session('sync_result'); @endphp

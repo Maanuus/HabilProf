@@ -6,6 +6,7 @@ use App\Http\Controllers\HabilitacionListadosController;
 use App\Http\Controllers\HabilitacionProfesorController;
 use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\SyncNotificationController;
+use App\Http\Controllers\SyncHistoryController;
 
 // Página principal
 Route::get('/home', [HabilitacionListadosController::class, 'ultimasHabilitaciones'])
@@ -36,6 +37,12 @@ Route::get('/admin/panel', [AdminPanelController::class, 'panel'])
     ->name('admin.panel');
 Route::post('/admin/sync', [AdminPanelController::class, 'ejecutarSync'])
     ->name('admin.sync');
+
+// Historial de cambios de sincronización
+Route::get('/admin/sync-history', [SyncHistoryController::class, 'index'])
+    ->name('admin.sync-history');
+Route::delete('/admin/sync-history', [SyncHistoryController::class, 'clear'])
+    ->name('admin.sync-history.clear');
 
 // API para notificaciones de sincronización en tiempo real
 Route::get('/api/sync-notification', [SyncNotificationController::class, 'getLatest'])
