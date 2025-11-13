@@ -4,13 +4,26 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HabilitacionController;
 use App\Http\Controllers\HabilitacionListadosController;
 use App\Http\Controllers\HabilitacionProfesorController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
+
+// Vista raíz
+Route::get('/', fn () => redirect()->route('login'));
 
 // Página principal
 Route::get('/home', [HabilitacionListadosController::class, 'ultimasHabilitaciones'])
     ->name('home');
 
 // Login
-Route::view('/', 'auth.login')->name('login');
+Route::middleware('guest')->group(function () {
+    Route::get('/login',    [LoginController::class, 'show'])->name('login');
+    Route::post('/login',   [LoginController::class, 'login'])->name('login.post');
+
+    Route::get('/register', [RegisterController::class, 'show'])->name('register');
+    Route::post('/register',[RegisterController::class, 'register'])->name('register.post');
+});
+
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Nueva habilitación
 Route::get('/habilitaciones/nueva', [HabilitacionController::class, 'create'])
