@@ -23,14 +23,20 @@
                                 <h1 class="h5 mt-3 mb-0">Portal de Ingreso</h1>
                                 <div class="text-muted small">HabilProf</div>
                             </div>
-                            <form onsubmit="return false;">
+                            <form>
                                 <div class="mb-3">
                                     <label for="rut" class="form-label fw-semibold">RUT</label>
-                                    <input id="rut" type="text" class="form-control" placeholder="Sin puntos ni dígito verificador">
+                                    <input id="rut" 
+                                        type="text" 
+                                        class="form-control" 
+                                        placeholder="Sin puntos ni dígito verificador">
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label fw-semibold">Contraseña</label>
-                                    <input id="password" type="password" class="form-control" placeholder="Contraseña">
+                                    <input id="password" 
+                                        type="password" 
+                                        class="form-control" 
+                                        placeholder="Contraseña">
                                 </div>
 
                                 <!-- redirige a la “home” real (welcome) -->

@@ -58,22 +58,50 @@
                             <div class="row g-3">
                                 <div class="col-md-5">
                                     <label class="form-label">RUT Alumno </label>
-                                    <input type="text" name="rut" class="form-control" placeholder="Ej: Sin puntos, con Dígito Verificador" value="{{ old('rut') }}" required>
+                                    <input 
+                                        type="text" 
+                                        name="rut" 
+                                        class="form-control" 
+                                        placeholder="Ej: Sin puntos, con Dígito Verificador" v
+                                        alue="{{ old('rut') }}" 
+                                        minlength="8"
+                                        maxlenght="9"
+                                        required>
                                 </div>
 
                                 <div class="col-md-7">
                                     <label class="form-label">Nombre Alumno</label>
-                                    <input type="text" name="nombre_alumno" class="form-control" placeholder="Nombre Completo" value="{{ old('nombre_alumno') }}" required>
+                                    <input 
+                                        type="text" 
+                                        name="nombre_alumno" 
+                                        class="form-control" 
+                                        placeholder="Nombre Completo" 
+                                        value="{{ old('nombre_alumno') }}" 
+                                        maxlenght="40"
+                                        required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Carrera</label>
-                                    <input type="text" name="carrera" class="form-control" placeholder="Ej: Ingeniería Civil" value="{{ old('carrera') }}" required>
+                                    <input type="text" 
+                                        name="carrera" 
+                                        class="form-control" 
+                                        placeholder="Ej: Ingeniería Civil Informática" 
+                                        value="{{ old('carrera') }}" 
+                                        maxlenght="50"
+                                        required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Correo Alumno</label>
-                                    <input type="email" name="correo_alumno" class="form-control" placeholder="Ej: maria@ing.ucsc.cl" value="{{ old('correo_alumno') }}" required>
+                                    <input type="email" 
+                                    name="correo_alumno" 
+                                    class="form-control" 
+                                    placeholder="Ej: maria@ing.ucsc.cl" 
+                                    value="{{ old('correo_alumno') }}" 
+                                    maxlenght="35"
+                                    pattern=".+@ing.ucsc\.com"
+                                    required>
                                 </div>
 
                                 <div class="col-md-6">
@@ -94,30 +122,59 @@
                                 <!-- Datos Pring / Prinv -->
                                 <div id="grupoProyecto" class="col-12 mt-3" style="display:none;">
                                     <label>Título</label>
-                                    <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}">
+                                    <input type="text" 
+                                        name="titulo" 
+                                        class="form-control" 
+                                        value="{{ old('titulo') }}"
+                                        maxlenght="100">
 
                                     <label class="mt-2">Descripción</label>
-                                    <textarea name="descripcion" class="form-control">{{ old('descripcion') }}</textarea>
+                                    <textarea name="descripcion" 
+                                        class="form-control"
+                                        maxlenght="500">{{ old('descripcion') }}</textarea>
 
                                     <label class="mt-2">RUT Profesor Comisión</label>
-                                    <input type="text" name="rut_profesor_comision" class="form-control" value="{{ old('rut_profesor_comision') }}">
+                                    <input type="text" 
+                                        name="rut_profesor_comision" 
+                                        class="form-control" 
+                                        value="{{ old('rut_profesor_comision') }}"
+                                        minlength="8"
+                                        maxlenght="9">
 
                                     <label class="mt-2">RUT Profesor Co-guía (opcional)</label>
-                                    <input type="text" name="rut_profesor_coguia" class="form-control" value="{{ old('rut_profesor_coguia') }}">
+                                    <input type="text" 
+                                        name="rut_profesor_coguia" 
+                                        class="form-control" 
+                                        value="{{ old('rut_profesor_coguia') }}"
+                                        minlength="8"
+                                        maxlenght="9">
                                 </div>
 
                                 <!-- Datos PrTut -->
                                 <div id="grupoPractica" class="col-12 mt-3" style="display:none;">
                                     <label>Nombre Empresa</label>
-                                    <input type="text" name="nombre_Empresa" class="form-control" value="{{ old('nombre_Empresa') }}">
+                                    <input type="text" 
+                                        name="nombre_Empresa" 
+                                        class="form-control" 
+                                        value="{{ old('nombre_Empresa') }}"
+                                        maxlenght="100">
 
                                     <label class="mt-2">Nombre Supervisor Empresa</label>
-                                    <input type="text" name="nombre_Supervisor" class="form-control" value="{{ old('nombre_Supervisor') }}">
+                                    <input type="text" 
+                                        name="nombre_Supervisor" 
+                                        class="form-control" 
+                                        value="{{ old('nombre_Supervisor') }}"
+                                        maxlenght="80">
                                 </div>
 
                                 <div class="col-md-6 mt-3">
                                     <label>Semestre Inicio (puede quedar vacío)</label>
-                                    <input type="text" name="semestre_inicio" class="form-control" value="{{ old('semestre_inicio') }}" placeholder="Ej: 2025-1">
+                                    <input 
+                                        type="text" 
+                                        name="semestre_inicio" 
+                                        class="form-control" 
+                                        value="{{ old('semestre_inicio') }}" 
+                                        placeholder="Ej: 2025-1">
                                 </div>
                             </div>
 

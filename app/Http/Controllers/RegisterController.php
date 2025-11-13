@@ -21,16 +21,14 @@ class RegisterController extends Controller
     public function register(Request $r) {
         $rutNorm = $this->normalizeRut((string)$r->input('rut'));
 
-        // Validación mínima y directa
         $r->validate([
             'name'                  => ['required','string','max:100'],
-            'rut'                   => ['required','string','max:12','unique:users,rut'],
+            'rut'                   => ['required','string','max:9','unique:users,rut'],
             'password'              => ['required','string','min:8','confirmed'],
         ]);
 
         $user = User::create([
             'name'     => $r->input('name'),
-            'email'    => $r->input('email'), // opcional; puedes omitirlo en la vista
             'rut'      => $rutNorm,
             'password' => Hash::make($r->input('password')),
         ]);
