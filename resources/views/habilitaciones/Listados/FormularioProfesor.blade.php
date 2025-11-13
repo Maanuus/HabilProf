@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <form action="{{ route('habilitaciones.ResultadoProfesor') }}" method="POST" >
+    <form action="{{ route('habilitaciones.ResultadoProfesor') }}" method="POST"  >
         @csrf
 
         <div class="row mb-3">

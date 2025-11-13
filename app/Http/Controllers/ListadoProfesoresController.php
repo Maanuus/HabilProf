@@ -16,7 +16,6 @@ class ListadoProfesoresController extends Controller
 
     public function ResultadoListadoProfesores(Request $request)
     {
-
         $request->validate([
             'rut_profesor' => 'required|integer',
             'dv' => 'required|string|max:1',
@@ -80,6 +79,19 @@ class ListadoProfesoresController extends Controller
             ->orderBy('Habilitacion_Profesional.semestre_inicio')
             ->get()
             ->groupBy('tipo_Profesor');
+
+        foreach($resultados as $tipo => $grupo)
+            foreach($grupo as $datos)
+            {
+                if(!Validaciones::validar_rut($datos -> rut_Profesor))
+                    {throw ValidationException::withMessages(['rut_Profesor' => "El RUT debe tener entre 7 y 8 dígitos numéricos."]);}
+                if(!Validaciones::validar_DV($datos -> DV))
+                    {throw ValidationException::withMessages(['DV' => "El dígito verificador ingresado no es válido."]);}
+                if(!Validaciones::validar_nombre($datos -> nombre_Profesor))
+                    {throw ValidationException::withMessages(['nombre_Profesor' => "Nombre profesor debe tener una maximo de 40 caracteres"]);}
+                if(!Validaciones::validar_tipoProfesor($datos -> tipo_Profesor))
+                    {throw ValidationException::withMessages(['tipo_Profesor' => "Tipo Profesor debe tener una maximo de 50 caracteres"]);} 
+            }
 
         return view('habilitaciones.Listados.ResultadosProfesor', [
             'resultados' => $resultados
