@@ -16,12 +16,13 @@ class ListadoProfesoresController extends Controller
 
     public function ResultadoListadoProfesores(Request $request)
     {
+        //Validaciones de datos de entrada del formulario.
         $request->validate([
             'rut_profesor' => 'required|integer',
             'dv' => 'required|string|max:1',
             'semestre_inicio' => 'required'
         ]);
-    
+
         $errores = [];
 
         if (!Validaciones::validar_rut($request->rut_profesor)) {
@@ -57,9 +58,11 @@ class ListadoProfesoresController extends Controller
             })
             ->select(
                 'Profesor.nombre_Profesor',
+                'Supervisa.rut_Profesor',
+                'Supervisa.DV as DV_profesor',
                 'Supervisa.tipo_Profesor',
                 'Alumno.rut_Alumno',
-                'Alumno.DV',
+                'Alumno.DV as DV_alumno',
                 'Alumno.nombre_Alumno',
                 'Habilitacion_Profesional.tipo_HabilProf',
                 'Habilitacion_Profesional.semestre_inicio'
@@ -67,7 +70,7 @@ class ListadoProfesoresController extends Controller
             ->where('Supervisa.rut_Profesor', $rut_profesor)
             ->where('Supervisa.DV', $dv);
 
- 
+
         if ($solo_semestre) {
             $query->where('Habilitacion_Profesional.semestre_inicio', '=', $semestre);
         } else {
@@ -80,17 +83,37 @@ class ListadoProfesoresController extends Controller
             ->get()
             ->groupBy('tipo_Profesor');
 
-        foreach($resultados as $tipo => $grupo)
-            foreach($grupo as $datos)
-            {
-                if(!Validaciones::validar_rut($datos -> rut_Profesor))
-                    {throw ValidationException::withMessages(['rut_Profesor' => "El RUT debe tener entre 7 y 8 dígitos numéricos."]);}
-                if(!Validaciones::validar_DV($datos -> DV))
-                    {throw ValidationException::withMessages(['DV' => "El dígito verificador ingresado no es válido."]);}
-                if(!Validaciones::validar_nombre($datos -> nombre_Profesor))
-                    {throw ValidationException::withMessages(['nombre_Profesor' => "Nombre profesor debe tener una maximo de 40 caracteres"]);}
-                if(!Validaciones::validar_tipoProfesor($datos -> tipo_Profesor))
-                    {throw ValidationException::withMessages(['tipo_Profesor' => "Tipo Profesor debe tener una maximo de 50 caracteres"]);} 
+        //Validaciones de datos que se extraen desde la base de datos.
+        foreach ($resultados as $tipoProfesor => $grupo)
+            foreach ($grupo as $registro) {
+                if (!Validaciones::validar_rut($registro->rut_Profesor)) {
+                    throw ValidationException::withMessages(['rut_Profesor' => "El RUT debe tener entre 7 y 8 dígitos numéricos."]);
+                }
+                if (!Validaciones::validar_DV($registro->DV_profesor)) {
+                    throw ValidationException::withMessages(['DV' => "El dígito verificador ingresado no es válido."]);
+                }
+                if (!Validaciones::validar_nombre($registro->nombre_Profesor)) {
+                    throw ValidationException::withMessages(['nombre_Profesor' => "Nombre profesor debe tener una maximo de 40 caracteres"]);
+                }
+                if (!Validaciones::validar_tipoProfesor($registro->tipo_Profesor)) {
+                    throw ValidationException::withMessages([
+                        'tipo_Profesor' => "Tipo Profesor no es válido."
+                    ]);
+                }
+                if (!Validaciones::validar_rut($registro->rut_Alumno)) {
+                    throw ValidationException::withMessages(['rut_Alumno' => "El RUT debe tener entre 7 y 8 dígitos numéricos."]);
+                }
+                if (!Validaciones::validar_DV($registro->DV_alumno)) {
+                    throw ValidationException::withMessages(['DV' => "El dígito verificador ingresado no es válido."]);
+                }
+                if (!Validaciones::validar_nombre($registro->nombre_Alumno)) {
+                    throw ValidationException::withMessages(['nombre_Alumno' => "Nombre profesor debe tener una maximo de 40 caracteres"]);
+                }
+                if (!Validaciones::validar_tipoHabilitacion($registro->tipo_HabilProf)) {
+                    throw ValidationException::withMessages([
+                        'tipo_Profesor' => "Tipo Habilitación no válido."
+                    ]);
+                }
             }
 
         return view('habilitaciones.Listados.ResultadosProfesor', [

@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Helpers\Validaciones;
+use Illuminate\Validation\ValidationException;
 class ListadoSemestralController extends Controller
 {
-   
+
     public function ListadoSemestral()
     {
         return view('habilitaciones.Listados.FormularioSemestral'); // Creamos esta vista
@@ -54,7 +55,37 @@ class ListadoSemestralController extends Controller
             $query->where('Habilitacion_Profesional.semestre_inicio', '>=', $semestre_inicio);
         }
 
-        $habilitaciones = $query->orderBy('Habilitacion_Profesional.semestre_inicio', 'asc')->get();
+        $habilitaciones = $query
+            ->orderBy('Habilitacion_Profesional.semestre_inicio', 'asc')
+            ->get();
+
+        foreach ($habilitaciones as $registro) {
+
+            if (!Validaciones::validar_rut($registro->rut_Alumno)) {
+                throw ValidationException::withMessages([
+                    'rut_Alumno' => "El RUT debe tener entre 7 y 8 dígitos numéricos."
+                ]);
+            }
+
+            if (!Validaciones::validar_DV($registro->DV)) {
+                throw ValidationException::withMessages([
+                    'DV' => "El dígito verificador ingresado no es válido."
+                ]);
+            }
+
+            if (!Validaciones::validar_nombre($registro->nombre_Alumno)) {
+                throw ValidationException::withMessages([
+                    'nombre_Alumno' => "Nombre del alumno debe tener un máximo de 40 caracteres."
+                ]);
+            }
+
+            if (!Validaciones::validar_tipoHabilitacion($registro->tipo_HabilProf)) {
+                throw ValidationException::withMessages([
+                    'tipo_Profesor' => "Tipo Habilitación no válido."
+                ]);
+            }
+        }
+
 
         return view('habilitaciones.Listados.ResultadoSemestral', compact('habilitaciones', 'semestre_inicio', 'solo_semestre'));
     }
@@ -77,6 +108,34 @@ class ListadoSemestralController extends Controller
             ->orderBy('Habilitacion_Profesional.semestre_inicio', 'desc') // últimas primero
             ->limit(5) // solo las 5 últimas
             ->get();
+        foreach ($ultimas as $registro) {
+
+            if (!Validaciones::validar_rut($registro->rut_Alumno)) {
+                throw ValidationException::withMessages([
+                    'rut_Alumno' => "El RUT debe tener entre 7 y 8 dígitos numéricos."
+                ]);
+            }
+
+            if (!Validaciones::validar_DV($registro->DV)) {
+                throw ValidationException::withMessages([
+                    'DV' => "El dígito verificador no es válido."
+                ]);
+            }
+
+            if (!Validaciones::validar_nombre($registro->nombre_Alumno)) {
+                throw ValidationException::withMessages([
+                    'nombre_Alumno' => "El nombre del alumno no puede superar los 40 caracteres."
+                ]);
+            }
+
+            if (!Validaciones::validar_tipoHabilitacion($registro->tipo_HabilProf)) {
+                throw ValidationException::withMessages([
+                    'tipo_HabilProf' => "El tipo de habilitación no es válido."
+                ]);
+            }
+        }
+
+
         // Conteo
         $countPring = DB::connection('pgsql2')
             ->table('Habilitacion_Profesional')
