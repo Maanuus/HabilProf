@@ -21,13 +21,29 @@ class Validaciones
 
     public static function validar_nombre($nombre):bool
     {
-        return preg_match("/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{1,40}$/",$nombre);
+        return preg_match("/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,40}$/",$nombre);
     }
 
-    public static function validar_tipoProfesor($tipo):bool
-    {
-        return preg_match("/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{1,50}$/",$tipo);
-    }
+    public static function validar_tipoProfesor($tipo): bool
+{
+    $validos = [
+        "Profesor Guía",
+        "Profesor Tutor de Práctica",
+        "Profesor Co-Guía",
+        "Profesor Comisión"
+    ];
 
+    return in_array($tipo, $validos, true);
+}
+    public static function validar_tipoHabilitacion($tipo): bool
+{
+    $validos = [
+        "Prinv",
+        "Pring",
+        "PrTut"
+    ];
+
+    return in_array($tipo, $validos, true);
+}
 
 }
