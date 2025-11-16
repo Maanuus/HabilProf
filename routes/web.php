@@ -2,15 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HabilitacionController;
+use App\Http\Controllers\ListadoSemestralController;
+use App\Http\Controllers\ListadoProfesoresController;
 use App\Http\Controllers\HabilitacionListadosController;
 use App\Http\Controllers\HabilitacionProfesorController;
 use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\SyncNotificationController;
 use App\Http\Controllers\SyncHistoryController;
 
-// Página principal
-Route::get('/home', [HabilitacionListadosController::class, 'ultimasHabilitaciones'])
-    ->name('home');
 
 // Login
 Route::view('/', 'auth.login')->name('login');
@@ -21,12 +20,6 @@ Route::get('/habilitaciones/nueva', [HabilitacionController::class, 'create'])
 
 Route::post('/habilitaciones', [HabilitacionController::class, 'store'])
     ->name('habilitaciones.store');
-
-// Listado histórico (por semestre)
-Route::get('/habilitaciones/historico', [HabilitacionListadosController::class, 'historicoForm'])
-    ->name('habilitaciones.HistoricoForm');
-Route::post('/habilitaciones/historico', [HabilitacionListadosController::class, 'historicoResultados'])
-    ->name('habilitaciones.HistoricoResultados');
 
 // Editar habilitación
 Route::get('/habilitaciones/{id}/editar', [HabilitacionController::class, 'edit'])
@@ -51,10 +44,22 @@ Route::get('/api/sync-notification', [SyncNotificationController::class, 'getLat
 Route::put('/habilitaciones/{id}', [HabilitacionController::class, 'update'])
     ->name('habilitaciones.update');
 
+//Manuel Cisternas Agurto
+// Página principal (Tabla que muestra las ultimas 5 habilitaciones)
+Route::get('/home', [ListadoSemestralController::class, 'ultimasHabilitaciones'])
+    ->name('home');
+
+    // Formulario listado semestral
+Route::get('/habilitaciones/ListadoSemestral', [ListadoSemestralController::class, 'ListadoSemestral'])
+    ->name('habilitaciones.FormularioSemestral');
+    // Resultados del filtro
+Route::post('/habilitaciones/ListadoSemestral', [ListadoSemestralController::class, 'ResultadoListadoSemestral'])
+    ->name('habilitaciones.ResultadoSemestral');
+
 // Formulario por profesor
-Route::get('/habilitaciones/profesor', [HabilitacionProfesorController::class, 'form'])
-    ->name('habilitaciones.ProfesorForm');
+Route::get('/habilitaciones/ListadoProfesor', [ListadoProfesoresController::class, 'ListadoProfesores'])
+    ->name('habilitaciones.FormularioProfesor');
 
 // Resultados del filtro
-Route::post('/habilitaciones/profesor/resultados', [HabilitacionProfesorController::class, 'resultados'])
-    ->name('habilitaciones.profesor.resultados');
+Route::post('/habilitaciones/ListadoProfesor', [ListadoProfesoresController::class, 'ResultadoListadoProfesores'])
+    ->name('habilitaciones.ResultadoProfesor');

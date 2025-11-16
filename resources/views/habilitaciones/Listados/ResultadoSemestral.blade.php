@@ -5,7 +5,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>Listado Histórico de Habilitaciones</h4>
-        <a href="{{ route('habilitaciones.HistoricoForm') }}" class="btn btn-secondary">
+        <a href="{{ route('habilitaciones.FormularioSemestral') }}" class="btn btn-secondary">
             ← Atrás
         </a>
     </div>
