@@ -4,38 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    private function normalizeRut(string $rut): string {
-        return strtoupper(preg_replace('/[^0-9K]/', '', $rut));
-    }
-
-    public function show() {
+    public function show()
+    {
+        // ajusta al path real de tu blade (p. ej. 'register' si así se llama)
         return view('auth.register');
     }
 
-    public function register(Request $r) {
-        $rutNorm = $this->normalizeRut((string)$r->input('rut'));
-
-        $r->validate([
-            'name'                  => ['required','string','max:100'],
-            'rut'                   => ['required','string','max:9','unique:users,rut'],
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name'                  => ['required','string','max:80'],
+            'rut'                   => ['required','string','max:12', 'regex:/^\d{7,8}-[\dkK]$/'],
             'password'              => ['required','string','min:8','confirmed'],
         ]);
 
-        $user = User::create([
-            'name'     => $r->input('name'),
-            'rut'      => $rutNorm,
-            'password' => Hash::make($r->input('password')),
+        $rut = $this->normalizeRut($validated['rut']);
+
+        // unique sobre el modelo (usa conexión pgsql2)
+        $request->validate([
+            'rut' => [Rule::unique(User::class, 'rut')],
         ]);
 
-        Auth::login($user);
-        $r->session()->regenerate();
+        $user = User::create([
+            'name'     => $validated['name'],
+            'rut'      => $rut,
+            'password' => $validated['password'], // se hashea por el cast
+        ]);
 
-        return redirect()->route('home');
+        return redirect()->route('login')->with('success', 'Cuenta creada. Ingresa con tus credenciales.');
+    }
+
+    private function normalizeRut(string $rut): string
+    {
+        $clean = strtoupper(preg_replace('/[^0-9K]/', '', $rut));
+        $numero = substr($clean, 0, -1);
+        $dv     = substr($clean, -1);
+        return ltrim($numero, '0').'-'.$dv; // deja formato XXXXXXXX-DV
     }
 }

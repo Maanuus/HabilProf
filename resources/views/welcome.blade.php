@@ -49,7 +49,10 @@
                 </div>
                 <div class="col-auto">
                     <span class="me-3"><i class="bi bi-person-circle"></i> Admin_DINF</span>
-                    <button class="btn btn-sm btn-outline-light">Salir</button>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                        <button class="btn btn-outline-secondary btn-sm">Salir</button>
+                    </form>
                 </div>
             </div>
         </div>

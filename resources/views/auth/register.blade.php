@@ -35,15 +35,6 @@
                                     <label class="form-label fw-semibold">RUT</label>
                                     <input name="rut" type="text" class="form-control" placeholder="Ej: 12.345.678-K" value="{{ old('rut') }}" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">¿Qué tipo de valor desempeña</label>
-                                    <select name="tipo_HabilProf" id="tipo_HabilProf" class="form-select" required>
-                                        <option value="" disabled selected>Seleccione un tipo</option>
-                                        <option value="Pring">Proyecto Ingeniería</option>
-                                        <option value="Prinv">Proyecto Investigación</option>
-                                        <option value="PrTut">Práctica Tutelada</option>
-                                    </select>
-                                </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Contraseña</label>
                                     <input name="password" type="password" class="form-control" placeholder="Mínimo 8 carácteres" required>

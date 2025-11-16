@@ -3,37 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    private function normalizeRut(string $rut): string {
-        return strtoupper(preg_replace('/[^0-9K]/', '', $rut));
-    }
 
-    public function show() {
+    public function show()
+    {
+        // Usa 'auth.login' si tu blade está en resources/views/auth/login.blade.php
+        // Cambia a 'login' si lo tienes en resources/views/login.blade.php
         return view('auth.login');
     }
 
-    public function login(Request $r) {
-        $cred = [
-            'rut'      => $this->normalizeRut((string)$r->input('rut')),
-            'password' => (string)$r->input('password'),
-        ];
+    public function login(Request $request)
+    {
+        $validated = $request->validate([
+            'rut'      => ['required','string','max:12'], // frontal ya guía el formato
+            'password' => ['required','string'],
+        ]);
 
-        if (Auth::attempt($cred, $r->boolean('remember'))) {
-            $r->session()->regenerate();
+        $rut = $this->normalizeRut($validated['rut']);
+
+        $ok = Auth::attempt([
+            'rut'      => $rut,
+            'password' => $validated['password'],
+        ], $request->boolean('remember'));
+
+        if ($ok) {
+            $request->session()->regenerate();
             return redirect()->intended(route('home'));
         }
 
         return back()->withErrors(['rut' => 'Credenciales inválidas'])->onlyInput('rut');
     }
 
-    public function logout(Request $r) {
+    public function logout(Request $request)
+    {
         Auth::logout();
-        $r->session()->invalidate();
-        $r->session()->regenerateToken();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('login');
+    }
+
+    private function normalizeRut(string $rut): string
+    {
+        $clean = strtoupper(preg_replace('/[^0-9K]/', '', $rut));
+        $numero = substr($clean, 0, -1);
+        $dv     = substr($clean, -1);
+        return ltrim($numero, '0').'-'.$dv;
     }
 }

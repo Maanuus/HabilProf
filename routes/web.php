@@ -1,4 +1,6 @@
-<?php
+<?php 
+
+namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HabilitacionController;
@@ -14,7 +16,7 @@ Route::get('/', fn () => redirect()->route('login'));
 Route::get('/home', [HabilitacionListadosController::class, 'ultimasHabilitaciones'])
     ->name('home');
 
-// Login
+// Login / Register (solo invitados)
 Route::middleware('guest')->group(function () {
     Route::get('/login',    [LoginController::class, 'show'])->name('login');
     Route::post('/login',   [LoginController::class, 'login'])->name('login.post');
@@ -23,13 +25,16 @@ Route::middleware('guest')->group(function () {
     Route::post('/register',[RegisterController::class, 'register'])->name('register.post');
 });
 
+// Logout (solo autenticados)
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
-// Nueva habilitación
+// Nueva habilitación (protegido)
 Route::get('/habilitaciones/nueva', [HabilitacionController::class, 'create'])
+    ->middleware('auth')
     ->name('habilitaciones.create');
 
 Route::post('/habilitaciones', [HabilitacionController::class, 'store'])
+    ->middleware('auth')
     ->name('habilitaciones.store');
 
 // Listado histórico (por semestre)
