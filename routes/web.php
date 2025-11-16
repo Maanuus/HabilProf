@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HabilitacionController;
 use App\Http\Controllers\ListadoSemestralController;
 use App\Http\Controllers\ListadoProfesoresController;
-use App\Http\Controllers\HabilitacionListadosController;
-use App\Http\Controllers\HabilitacionProfesorController;
 use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\SyncNotificationController;
 use App\Http\Controllers\SyncHistoryController;
