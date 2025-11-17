@@ -100,7 +100,7 @@
                                     placeholder="Ej: maria@ing.ucsc.cl" 
                                     value="{{ old('correo_alumno') }}" 
                                     maxlenght="35"
-                                    pattern=".+@ing.ucsc\.com"
+                                    pattern=".+@ing.ucsc\.cl"
                                     required>
                                 </div>
 
@@ -208,7 +208,6 @@
             }
         });
 
-        // Mostrar grupo correcto si hay old()
         window.addEventListener('load', function() {
             const tipo = tipoSelect.value;
             if(tipo === 'Pring' || tipo === 'Prinv') grupoProyecto.style.display = 'block';

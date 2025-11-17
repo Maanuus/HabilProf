@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Fecades\Verificator;
 
 class HabilitacionController extends Controller
 {
@@ -35,6 +34,17 @@ class HabilitacionController extends Controller
         $rutCom = $request->rut_profesor_comision ? $this->splitRut($request->rut_profesor_comision) : null;
         $rutCg  = $request->rut_profesor_coguia   ? $this->splitRut($request->rut_profesor_coguia)   : null;
 
+        $exists = DB::connection('pgsql2')
+        ->table('Habilitacion_Profesional')
+        ->where('id_Habilitacion', $id)
+        ->exists();
+
+        if ($exists) {
+            return back()
+                ->withErrors(['id_habilitacion' => 'El ID de habilitación ya existe. Elige otro.'])
+                ->withInput();
+        }
+
         DB::connection('pgsql2')->transaction(function () use ($request, $rutAl, $dvAl, $id, $tipo, $descripcion, $rutCom, $rutCg) {
 
             // Alumno
@@ -48,32 +58,30 @@ class HabilitacionController extends Controller
             );
 
             // Habilitación
-            DB::connection('pgsql2')->table('Habilitacion_Profesional')->updateOrInsert(
-                ['id_Habilitacion' => 'required|unique:Habilitacion_Profesional,id_habilitacion'],
-                [
-                    'rut_Alumno'      => $rutAl,
-                    'DV'              => $dvAl,
-                    'tipo_HabilProf'  => $tipo,
-                    'nota'            => null,          
-                    'descripcion'     => $descripcion,         
-                    'semestre_inicio' => $request->semestre_inicio ?? null,
-                ]
-            );
+            DB::connection('pgsql2')->table('Habilitacion_Profesional')->insert([
+                'id_Habilitacion' => $id,
+                'rut_Alumno'      => $rutAl,
+                'DV'              => $dvAl,
+                'tipo_HabilProf'  => $tipo,
+                'nota'            => null,
+                'descripcion'     => $descripcion,
+                'semestre_inicio' => $request->semestre_inicio ?? null,
+            ]);
 
             // Tipo habilitación
-            if ($tipo === 'PrIng') {
-                DB::connection('pgsql2')->table('PrIng')->updateOrInsert(
-                    ['id_Habilitacion' => 'required|unique:Habilitacion_Profesional,id_habilitacion'],
-                    ['titulo' => $request->titulo ?? '']
-                );
-            } elseif ($tipo === 'PrInv') {
+            if ($tipo === 'Pring' || $tipo === 'PrIng') {
+            DB::connection('pgsql2')->table('PrIng')->updateOrInsert(
+                ['id_Habilitacion' => $id],
+                ['titulo' => $request->titulo ?? '']
+            );
+            } elseif ($tipo === 'Prinv' || $tipo === 'PrInv') {
                 DB::connection('pgsql2')->table('PrInv')->updateOrInsert(
-                    ['id_Habilitacion' => 'required|unique:Habilitacion_Profesional,id_habilitacion'],
+                    ['id_Habilitacion' => $id],
                     ['titulo' => $request->titulo ?? '']
                 );
             } elseif ($tipo === 'PrTut') {
                 DB::connection('pgsql2')->table('PrTut')->updateOrInsert(
-                    ['id_Habilitacion' => 'required|unique:Habilitacion_Profesional,id_habilitacion'],
+                    ['id_Habilitacion' => $id],
                     [
                         'nombre_Empresa'    => $request->nombre_Empresa ?? '',
                         'nombre_Supervisor' => $request->nombre_Supervisor ?? '',
