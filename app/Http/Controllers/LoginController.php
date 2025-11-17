@@ -11,15 +11,13 @@ class LoginController extends Controller
 
     public function show()
     {
-        // Usa 'auth.login' si tu blade está en resources/views/auth/login.blade.php
-        // Cambia a 'login' si lo tienes en resources/views/login.blade.php
         return view('auth.login');
     }
 
     public function login(Request $request)
     {
         $validated = $request->validate([
-            'rut'      => ['required','string','max:12'], // frontal ya guía el formato
+            'rut'      => ['required','string','max:12'],
             'password' => ['required','string'],
         ]);
 

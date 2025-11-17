@@ -37,7 +37,7 @@
                                 <div class="mb-3">
                                     Si aún no tienes tu contraseña, haz click <a href="{{ route('register') }}" class="link-primary">aquí</a>.
                                 </div>
-                            @error('rut') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
+                                @error('rut') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
                             </form>
                         </div>
                     </div>

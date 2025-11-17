@@ -26,7 +26,6 @@ class RegisterController extends Controller
 
         $rut = $this->normalizeRut($validated['rut']);
 
-        // unique sobre el modelo (usa conexión pgsql2)
         $request->validate([
             'rut' => [Rule::unique(User::class, 'rut')],
         ]);
@@ -34,7 +33,7 @@ class RegisterController extends Controller
         $user = User::create([
             'name'     => $validated['name'],
             'rut'      => $rut,
-            'password' => $validated['password'], // se hashea por el cast
+            'password' => $validated['password'], 
         ]);
 
         return redirect()->route('login')->with('success', 'Cuenta creada. Ingresa con tus credenciales.');
