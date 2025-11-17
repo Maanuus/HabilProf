@@ -31,8 +31,8 @@ class SyncModulosCommand extends Command
         try {
             // Completar campos incompletos
             $incompletos = $sync->completarIncompletos();
-            $this->line("✓ Alumnos actualizados: {$incompletos['alumnos_actualizados']}");
-            $this->line("✓ Profesores actualizados: {$incompletos['profesores_actualizados']}");
+            $this->line("✓ Alumnos creados: {$incompletos['alumnos_creados']} | actualizados: {$incompletos['alumnos_actualizados']}");
+            $this->line("✓ Profesores creados: {$incompletos['profesores_creados']} | actualizados: {$incompletos['profesores_actualizados']}");
 
             if (!empty($incompletos['errores'])) {
                 $this->warn('Observaciones:');
@@ -48,7 +48,9 @@ class SyncModulosCommand extends Command
             // Guardar resultado en cache para mostrar en las vistas
             \Cache::put('last_sync_notification', [
                 'timestamp' => now()->format('Y-m-d H:i:s'),
+                'alumnos_creados' => $incompletos['alumnos_creados'],
                 'alumnos' => $incompletos['alumnos_actualizados'],
+                'profesores_creados' => $incompletos['profesores_creados'],
                 'profesores' => $incompletos['profesores_actualizados'],
                 'notas_total' => $notas['total_notas'],
                 'notas_aprobadas' => $notas['aprobadas'],

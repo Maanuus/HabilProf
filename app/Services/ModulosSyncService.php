@@ -54,88 +54,130 @@ class ModulosSyncService
         $res = [
             'alumnos_actualizados' => 0,
             'profesores_actualizados' => 0,
+            'alumnos_creados' => 0,
+            'profesores_creados' => 0,
             'errores' => [],
         ];
 
-        // Alumnos: Obtener TODOS los alumnos de HabilProf2, no solo incompletos
-        $alumnos = DB::connection('pgsql2')->table('Alumno')->get();
+        // =====================
+        // Alumnos: Crear nuevos y actualizar existentes
+        // =====================
+        $alumnosDestino = DB::connection('pgsql2')->table('Alumno')->get();
+        $mapAlumnosDestino = [];
+        foreach ($alumnosDestino as $a) {
+            $mapAlumnosDestino[$a->rut_Alumno . '-' . $a->DV] = $a;
+        }
 
-        foreach ($alumnos as $a) {
-            $mod = DB::connection('Modulos')->table('Alumno')
-                ->where('rut_Alumno', $a->rut_Alumno)
-                ->where('DV', $a->DV)
-                ->first();
+        $alumnosOrigen = DB::connection('Modulos')->table('Alumno')->get();
 
-            if (!$mod) {
-                // Si no existe en Modulos, registrar pero no es error crítico
-                continue;
+        foreach ($alumnosOrigen as $mod) {
+            $clave = $mod->rut_Alumno . '-' . $mod->DV;
+            if (!isset($mapAlumnosDestino[$clave])) {
+                // Crear nuevo alumno en destino
+                $insert = [
+                    'rut_Alumno' => $mod->rut_Alumno,
+                    'DV' => $mod->DV,
+                    'nombre_Alumno' => $mod->nombre_Alumno ?? '',
+                    'carrera' => $mod->carrera ?? '',
+                    // NOT NULL en destino: usar correo válido, si no, string vacío y registrar observación
+                    'correo_Alumno' => ($mod->correo_Alumno && $this->validarCorreoIng($mod->correo_Alumno))
+                        ? $mod->correo_Alumno
+                        : ($mod->correo_Alumno ?? ''),
+                ];
+                try {
+                    DB::connection('pgsql2')->table('Alumno')->insert($insert);
+                    $res['alumnos_creados']++;
+                    // Registrar creación (JSON con todos los campos como valor nuevo)
+                    $this->registrarCambio('Alumno', $clave, '_creacion', null, json_encode($insert, JSON_UNESCAPED_UNICODE));
+                    if (!$this->validarCorreoIng($mod->correo_Alumno ?? '')) {
+                        $res['errores'][] = "Correo alumno inválido o dominio no permitido en creación: $clave => '{$mod->correo_Alumno}'";
+                    }
+                } catch (\Exception $e) {
+                    $res['errores'][] = "Error creando alumno $clave: " . $e->getMessage();
+                }
+                continue; // nada que actualizar porque acaba de crearse
             }
 
+            // Actualizar diferencias
+            $dest = $mapAlumnosDestino[$clave];
             $update = [];
-            
-            // Actualizar nombre si es diferente en Modulos
-            if (!empty($mod->nombre_Alumno) && $mod->nombre_Alumno !== $a->nombre_Alumno) {
+
+            if (!empty($mod->nombre_Alumno) && $mod->nombre_Alumno !== $dest->nombre_Alumno) {
                 $update['nombre_Alumno'] = $mod->nombre_Alumno;
-                $this->registrarCambio('Alumno', $a->rut_Alumno . '-' . $a->DV, 'nombre_Alumno', $a->nombre_Alumno, $mod->nombre_Alumno);
+                $this->registrarCambio('Alumno', $clave, 'nombre_Alumno', $dest->nombre_Alumno, $mod->nombre_Alumno);
             }
-            
-            // Actualizar carrera si es diferente en Modulos
-            if (!empty($mod->carrera) && $mod->carrera !== $a->carrera) {
+            if (!empty($mod->carrera) && $mod->carrera !== $dest->carrera) {
                 $update['carrera'] = $mod->carrera;
-                $this->registrarCambio('Alumno', $a->rut_Alumno . '-' . $a->DV, 'carrera', $a->carrera, $mod->carrera);
+                $this->registrarCambio('Alumno', $clave, 'carrera', $dest->carrera, $mod->carrera);
             }
-            
-            // Actualizar correo si es diferente en Modulos y es válido
-            if (!empty($mod->correo_Alumno) && $mod->correo_Alumno !== $a->correo_Alumno) {
+            if (!empty($mod->correo_Alumno) && $mod->correo_Alumno !== $dest->correo_Alumno) {
                 if ($this->validarCorreoIng($mod->correo_Alumno)) {
                     $update['correo_Alumno'] = $mod->correo_Alumno;
-                    $this->registrarCambio('Alumno', $a->rut_Alumno . '-' . $a->DV, 'correo_Alumno', $a->correo_Alumno, $mod->correo_Alumno);
+                    $this->registrarCambio('Alumno', $clave, 'correo_Alumno', $dest->correo_Alumno, $mod->correo_Alumno);
                 }
             }
-
             if (!empty($update)) {
                 DB::connection('pgsql2')->table('Alumno')
-                    ->where('rut_Alumno', $a->rut_Alumno)
-                    ->where('DV', $a->DV)
+                    ->where('rut_Alumno', $mod->rut_Alumno)
+                    ->where('DV', $mod->DV)
                     ->update($update);
                 $res['alumnos_actualizados']++;
             }
         }
 
-        // Profesores: Obtener TODOS los profesores de HabilProf2, no solo incompletos
-        $profesores = DB::connection('pgsql2')->table('Profesor')->get();
+        // =====================
+        // Profesores: Crear nuevos y actualizar existentes
+        // =====================
+        $profesoresDestino = DB::connection('pgsql2')->table('Profesor')->get();
+        $mapProfesoresDestino = [];
+        foreach ($profesoresDestino as $p) {
+            $mapProfesoresDestino[$p->rut_Profesor . '-' . $p->DV] = $p;
+        }
 
-        foreach ($profesores as $p) {
-            $modP = DB::connection('Modulos')->table('Profesor')
-                ->where('rut_Profesor', $p->rut_Profesor)
-                ->where('DV', $p->DV)
-                ->first();
+        $profesoresOrigen = DB::connection('Modulos')->table('Profesor')->get();
 
-            if (!$modP) {
-                // Si no existe en Modulos, continuar
+        foreach ($profesoresOrigen as $modP) {
+            $clave = $modP->rut_Profesor . '-' . $modP->DV;
+            if (!isset($mapProfesoresDestino[$clave])) {
+                // Crear nuevo profesor
+                $insert = [
+                    'rut_Profesor' => $modP->rut_Profesor,
+                    'DV' => $modP->DV,
+                    'nombre_Profesor' => $modP->nombre_Profesor ?? '',
+                    // NOT NULL en destino: usar correo válido, si no, string vacío y registrar observación
+                    'correo_Profesor' => ($modP->correo_Profesor && $this->validarCorreoUcsc($modP->correo_Profesor))
+                        ? $modP->correo_Profesor
+                        : ($modP->correo_Profesor ?? ''),
+                ];
+                try {
+                    DB::connection('pgsql2')->table('Profesor')->insert($insert);
+                    $res['profesores_creados']++;
+                    $this->registrarCambio('Profesor', $clave, '_creacion', null, json_encode($insert, JSON_UNESCAPED_UNICODE));
+                    if (!$this->validarCorreoUcsc($modP->correo_Profesor ?? '')) {
+                        $res['errores'][] = "Correo profesor inválido o dominio no permitido en creación: $clave => '{$modP->correo_Profesor}'";
+                    }
+                } catch (\Exception $e) {
+                    $res['errores'][] = "Error creando profesor $clave: " . $e->getMessage();
+                }
                 continue;
             }
 
+            $dest = $mapProfesoresDestino[$clave];
             $update = [];
-            
-            // Actualizar nombre si es diferente en Modulos
-            if (!empty($modP->nombre_Profesor) && $modP->nombre_Profesor !== $p->nombre_Profesor) {
+            if (!empty($modP->nombre_Profesor) && $modP->nombre_Profesor !== $dest->nombre_Profesor) {
                 $update['nombre_Profesor'] = $modP->nombre_Profesor;
-                $this->registrarCambio('Profesor', $p->rut_Profesor . '-' . $p->DV, 'nombre_Profesor', $p->nombre_Profesor, $modP->nombre_Profesor);
+                $this->registrarCambio('Profesor', $clave, 'nombre_Profesor', $dest->nombre_Profesor, $modP->nombre_Profesor);
             }
-            
-            // Actualizar correo si es diferente en Modulos y es válido
-            if (!empty($modP->correo_Profesor) && $modP->correo_Profesor !== $p->correo_Profesor) {
+            if (!empty($modP->correo_Profesor) && $modP->correo_Profesor !== $dest->correo_Profesor) {
                 if ($this->validarCorreoUcsc($modP->correo_Profesor)) {
                     $update['correo_Profesor'] = $modP->correo_Profesor;
-                    $this->registrarCambio('Profesor', $p->rut_Profesor . '-' . $p->DV, 'correo_Profesor', $p->correo_Profesor, $modP->correo_Profesor);
+                    $this->registrarCambio('Profesor', $clave, 'correo_Profesor', $dest->correo_Profesor, $modP->correo_Profesor);
                 }
             }
-
             if (!empty($update)) {
                 DB::connection('pgsql2')->table('Profesor')
-                    ->where('rut_Profesor', $p->rut_Profesor)
-                    ->where('DV', $p->DV)
+                    ->where('rut_Profesor', $modP->rut_Profesor)
+                    ->where('DV', $modP->DV)
                     ->update($update);
                 $res['profesores_actualizados']++;
             }

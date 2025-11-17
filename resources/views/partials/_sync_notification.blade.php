@@ -38,8 +38,8 @@ function showNotification(data) {
             <strong>Sincronización completada</strong>
             <span class="small text-muted">(${notification.timestamp})</span>
             <div class="small mt-1">
-                Alumnos: ${notification.alumnos} | 
-                Profesores: ${notification.profesores} | 
+                Alumnos: +${notification.alumnos_creados || 0} / ${notification.alumnos} act | 
+                Profesores: +${notification.profesores_creados || 0} / ${notification.profesores} act | 
                 Notas: ${notification.notas_total} 
                 (Aprobadas: ${notification.notas_aprobadas}, Reprobadas: ${notification.notas_reprobadas})
             </div>
