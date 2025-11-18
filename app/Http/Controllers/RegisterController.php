@@ -12,7 +12,6 @@ class RegisterController extends Controller
 {
     public function show()
     {
-        // ajusta al path real de tu blade (p. ej. 'register' si así se llama)
         return view('auth.register');
     }
 
@@ -44,6 +43,6 @@ class RegisterController extends Controller
         $clean = strtoupper(preg_replace('/[^0-9K]/', '', $rut));
         $numero = substr($clean, 0, -1);
         $dv     = substr($clean, -1);
-        return ltrim($numero, '0').'-'.$dv; // deja formato XXXXXXXX-DV
+        return ltrim($numero, '0').'-'.$dv;
     }
 }
