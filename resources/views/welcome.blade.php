@@ -53,13 +53,18 @@
                         <i class="bi bi-gear-fill"></i> Admin
                     </a>
                     <button class="btn btn-sm btn-outline-light">Salir</button>
+                <div class="col-auto">
+                    <span class="me-3"><i class="bi bi-person-circle"></i> Admin_DINF</span>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                        <button class="btn btn-outline-secondary btn-sm">Salir</button>
+                    </form>
                 </div>
             </div>
         </div>
     </header>
 
     <div class="container-fluid">
-        <!-- Main Content -->
         <div class="col-md-9 col-lg-10 p-4">
             @include('partials._sync_notification')
             
@@ -67,7 +72,6 @@
                 <h4>Gestión de Habilitaciones Profesionales</h4>
             </div>
 
-            <!-- Stats Cards -->
             <div class="row mb-4">
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card h-100">
@@ -103,7 +107,6 @@
                 </div>
             </div>
 
-            <!-- Search and Actions -->
             <div class="d-flex mb-4">
                 <a href="{{ route('habilitaciones.create') }}" class="btn btn-primary me-2">
                     <i class="bi bi-plus-circle"></i> Nueva habilitación
@@ -119,7 +122,6 @@
         </div>
     </div>
 
-    <!-- Table -->
     <div class="card">
         <div class="card-header">
             <h6 class="mb-0"><i class="bi bi-table me-2"></i>Habilitaciones Registradas</h6>
@@ -135,7 +137,7 @@
                             <th>Semestre</th>
                             <th>Nota</th>
                             <th>Descripción</th>
-                            <th>Acciones</th> {{-- nueva columna --}}
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -192,7 +194,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal de edición (mockup) -->
                 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -203,7 +204,6 @@
                                     aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- Aquí puedes mostrar datos falsos o de ejemplo -->
                                 <form>
                                     <div class="row g-3">
                                         <div class="col-md-6">

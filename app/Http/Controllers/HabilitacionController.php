@@ -24,7 +24,6 @@ class HabilitacionController extends Controller
 
     public function store(Request $request)
     {
-        // sin validaciones, solo limpieza mínima
         [$rutAl, $dvAl] = $this->splitRut($request->rut);
         $id   = (int) $request->id_habilitacion;
         $tipo = $request->tipo_HabilProf;
@@ -32,13 +31,23 @@ class HabilitacionController extends Controller
         // PrTut => '', Proyectos => lo que venga o ''
         $descripcion = ($tipo === 'PrTut') ? '' : ($request->descripcion ?? '');
 
-        // Profesores (si vienen en el form)
         $rutCom = $request->rut_profesor_comision ? $this->splitRut($request->rut_profesor_comision) : null;
         $rutCg  = $request->rut_profesor_coguia   ? $this->splitRut($request->rut_profesor_coguia)   : null;
 
+        $exists = DB::connection('pgsql2')
+        ->table('Habilitacion_Profesional')
+        ->where('id_Habilitacion', $id)
+        ->exists();
+
+        if ($exists) {
+            return back()
+                ->withErrors(['id_habilitacion' => 'El ID de habilitación ya existe. Elige otro.'])
+                ->withInput();
+        }
+
         DB::connection('pgsql2')->transaction(function () use ($request, $rutAl, $dvAl, $id, $tipo, $descripcion, $rutCom, $rutCg) {
 
-            // Alumno (BD HabilProf2, tabla exacta "Alumno")
+            // Alumno
             DB::connection('pgsql2')->table('Alumno')->updateOrInsert(
                 ['rut_Alumno' => $rutAl, 'DV' => $dvAl],
                 [
@@ -48,26 +57,24 @@ class HabilitacionController extends Controller
                 ]
             );
 
-            // Habilitación base (tabla exacta "Habilitacion_Profesional")
-            DB::connection('pgsql2')->table('Habilitacion_Profesional')->updateOrInsert(
-                ['id_Habilitacion' => $id],
-                [
-                    'rut_Alumno'      => $rutAl,
-                    'DV'              => $dvAl,
-                    'tipo_HabilProf'  => $tipo,
-                    'nota'            => null,                 // usa 0 si tu columna es NOT NULL
-                    'descripcion'     => $descripcion,         // nunca NULL
-                    'semestre_inicio' => $request->semestre_inicio ?? null,
-                ]
-            );
+            // Habilitación
+            DB::connection('pgsql2')->table('Habilitacion_Profesional')->insert([
+                'id_Habilitacion' => $id,
+                'rut_Alumno'      => $rutAl,
+                'DV'              => $dvAl,
+                'tipo_HabilProf'  => $tipo,
+                'nota'            => null,
+                'descripcion'     => $descripcion,
+                'semestre_inicio' => $request->semestre_inicio ?? null,
+            ]);
 
-            // Detalle por tipo (respetando nombres de tabla con mayúsculas)
-            if ($tipo === 'PrIng') {
-                DB::connection('pgsql2')->table('PrIng')->updateOrInsert(
-                    ['id_Habilitacion' => $id],
-                    ['titulo' => $request->titulo ?? '']
-                );
-            } elseif ($tipo === 'PrInv') {
+            // Tipo habilitación
+            if ($tipo === 'Pring' || $tipo === 'PrIng') {
+            DB::connection('pgsql2')->table('PrIng')->updateOrInsert(
+                ['id_Habilitacion' => $id],
+                ['titulo' => $request->titulo ?? '']
+            );
+            } elseif ($tipo === 'Prinv' || $tipo === 'PrInv') {
                 DB::connection('pgsql2')->table('PrInv')->updateOrInsert(
                     ['id_Habilitacion' => $id],
                     ['titulo' => $request->titulo ?? '']
@@ -83,68 +90,68 @@ class HabilitacionController extends Controller
             }
 
             // Supervisa - Profesor Comisión
-if ($rutCom) {
-    [$rutP, $dvP] = $rutCom;
+            if ($rutCom) {
+                [$rutP, $dvP] = $rutCom;
 
-    // 1) Asegurar existencia en Profesor
-    DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
-        ['rut_Profesor' => $rutP, 'DV' => $dvP],
-        [
-            'nombre_Profesor' => $request->nombre_profesor_comision ?? '',
-            'correo_Profesor' => $request->correo_profesor_comision ?? '',
-        ]
-    );
+                // 1) Asegurar existencia en Profesor
+                DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
+                    ['rut_Profesor' => $rutP, 'DV' => $dvP],
+                    [
+                        'nombre_Profesor' => $request->nombre_profesor_comision ?? '',
+                        'correo_Profesor' => $request->correo_profesor_comision ?? '',
+                    ]
+                );
 
-    // 2) Insertar relación en Supervisa si no existe
-    $exists = DB::connection('pgsql2')->table('Supervisa')->where([
-        'id_Habilitacion' => $id,
-        'rut_Profesor'    => $rutP,
-        'DV'              => $dvP,
-    ])->exists();
+                // 2) Insertar relación en Supervisa si no existe
+                $exists = DB::connection('pgsql2')->table('Supervisa')->where([
+                    'id_Habilitacion' => $id,
+                    'rut_Profesor'    => $rutP,
+                    'DV'              => $dvP,
+                ])->exists();
 
-    if (!$exists) {
-        $nextId = (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
+                if (!$exists) {
+                    $nextId = (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
 
-        DB::connection('pgsql2')->table('Supervisa')->insert([
-            'id_Supervisa'    => $nextId,
-            'id_Habilitacion' => $id,
-            'rut_Profesor'    => $rutP,
-            'DV'              => $dvP,
-            'tipo_Profesor'   => 'Profesor Comisión',
-        ]);
-    }
-}
+                    DB::connection('pgsql2')->table('Supervisa')->insert([
+                        'id_Supervisa'    => $nextId,
+                        'id_Habilitacion' => $id,
+                        'rut_Profesor'    => $rutP,
+                        'DV'              => $dvP,
+                        'tipo_Profesor'   => 'Profesor Comisión',
+                    ]);
+                }
+            }
 
-// Supervisa - Profesor Co-guía
-if ($rutCg) {
-    [$rutP, $dvP] = $rutCg;
+            // Supervisa - Profesor Co-guía
+            if ($rutCg) {
+                [$rutP, $dvP] = $rutCg;
 
-    DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
-        ['rut_Profesor' => $rutP, 'DV' => $dvP],
-        [
-            'nombre_Profesor' => $request->nombre_profesor_coguia ?? '',
-            'correo_Profesor' => $request->correo_profesor_coguia ?? '',
-        ]
-    );
+                DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
+                    ['rut_Profesor' => $rutP, 'DV' => $dvP],
+                    [
+                        'nombre_Profesor' => $request->nombre_profesor_coguia ?? '',
+                        'correo_Profesor' => $request->correo_profesor_coguia ?? '',
+                    ]
+                );
 
-    $exists = DB::connection('pgsql2')->table('Supervisa')->where([
-        'id_Habilitacion' => $id,
-        'rut_Profesor'    => $rutP,
-        'DV'              => $dvP,
-    ])->exists();
+                $exists = DB::connection('pgsql2')->table('Supervisa')->where([
+                    'id_Habilitacion' => $id,
+                    'rut_Profesor'    => $rutP,
+                    'DV'              => $dvP,
+                ])->exists();
 
-    if (!$exists) {
-        $nextId = (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
+                if (!$exists) {
+                    $nextId = (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
 
-        DB::connection('pgsql2')->table('Supervisa')->insert([
-            'id_Supervisa'    => $nextId,
-            'id_Habilitacion' => $id,
-            'rut_Profesor'    => $rutP,
-            'DV'              => $dvP,
-            'tipo_Profesor'   => 'Profesor Co-guía',
-        ]);
-    }
-}
+                    DB::connection('pgsql2')->table('Supervisa')->insert([
+                        'id_Supervisa'    => $nextId,
+                        'id_Habilitacion' => $id,
+                        'rut_Profesor'    => $rutP,
+                        'DV'              => $dvP,
+                        'tipo_Profesor'   => 'Profesor Co-guía',
+                    ]);
+                }
+            }
         });
 
         return redirect()->route('home')->with('success', 'Habilitación guardada.');

@@ -1,4 +1,6 @@
-<?php
+<?php 
+
+namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HabilitacionController;
@@ -8,15 +10,37 @@ use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\SyncNotificationController;
 use App\Http\Controllers\SyncHistoryController;
 
+use App\Http\Controllers\HabilitacionListadosController;
+use App\Http\Controllers\HabilitacionProfesorController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
 
-// Login
-Route::view('/', 'auth.login')->name('login');
+// Vista raíz
+Route::get('/', fn () => redirect()->route('login'));
 
-// Nueva habilitación
+// Página principal
+Route::get('/home', [HabilitacionListadosController::class, 'ultimasHabilitaciones'])
+    ->name('home');
+
+// Login / Register (solo invitados)
+Route::middleware('guest')->group(function () {
+    Route::get('/login',    [LoginController::class, 'show'])->name('login');
+    Route::post('/login',   [LoginController::class, 'login'])->name('login.post');
+
+    Route::get('/register', [RegisterController::class, 'show'])->name('register');
+    Route::post('/register',[RegisterController::class, 'register'])->name('register.post');
+});
+
+// Logout (solo autenticados)
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
+
+// Nueva habilitación (protegido)
 Route::get('/habilitaciones/nueva', [HabilitacionController::class, 'create'])
+    ->middleware('auth')
     ->name('habilitaciones.create');
 
 Route::post('/habilitaciones', [HabilitacionController::class, 'store'])
+    ->middleware('auth')
     ->name('habilitaciones.store');
 
 // Editar habilitación
@@ -61,3 +85,5 @@ Route::get('/habilitaciones/ListadoProfesor', [ListadoProfesoresController::clas
 // Resultados del filtro
 Route::post('/habilitaciones/ListadoProfesor', [ListadoProfesoresController::class, 'ResultadoListadoProfesores'])
     ->name('habilitaciones.ResultadoProfesor');
+Route::post('/habilitaciones/profesor/resultados', [HabilitacionProfesorController::class, 'resultados'])
+    ->name('habilitaciones.profesor.resultados');
