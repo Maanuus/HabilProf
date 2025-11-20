@@ -1,5 +1,5 @@
 <?php
-
+//Faltan las migraciones 
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;

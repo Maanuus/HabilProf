@@ -62,8 +62,8 @@
                                         type="text" 
                                         name="rut" 
                                         class="form-control" 
-                                        placeholder="Ej: Sin puntos, con Dígito Verificador" v
-                                        alue="{{ old('rut') }}" 
+                                        placeholder="Ej: 12345678-9"
+                                        value="{{ old('rut') }}" 
                                         minlength="8"
                                         maxlenght="9"
                                         required>
@@ -117,6 +117,31 @@
                                         <option value="Prinv" {{ old('tipo_HabilProf')=='Prinv' ? 'selected':'' }}>Proyecto Investigación</option>
                                         <option value="PrTut" {{ old('tipo_HabilProf')=='PrTut' ? 'selected':'' }}>Práctica Tutelada</option>
                                     </select>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <label class="form-label">RUT Profesor Supervisor</label>
+                                    <input 
+                                        type="text" 
+                                        name="rut_profesor_supervisor" 
+                                        class="form-control" 
+                                        placeholder="Ej: 12345678-9"
+                                        value="{{ old('rut_profesor_supervisor') }}" 
+                                        minlength="8"
+                                        maxlenght="9"
+                                        required>
+                                </div>
+
+                                <div class="col-md-7">
+                                    <label class="form-label">Nombre Profesor Supervisor</label>
+                                    <input 
+                                        type="text" 
+                                        name="nombre_profesor_supervisor" 
+                                        class="form-control" 
+                                        placeholder="Nombre Completo"
+                                        value="{{ old('nombre_profesor_supervisor') }}"
+                                        maxlength="40"
+                                        required>
                                 </div>
 
                                 <!-- Datos Pring / Prinv -->
