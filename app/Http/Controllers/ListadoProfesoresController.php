@@ -18,7 +18,7 @@ class ListadoProfesoresController extends Controller
     {
         //Validaciones de datos de entrada del formulario.
         $request->validate([
-            'rut_profesor' => 'required|integer',
+            'rut_profesor' => 'required|integer|min:5000000|max:99999999',
             'dv' => 'required|string|max:1',
             'semestre_inicio' => 'required'
         ]);
@@ -26,7 +26,7 @@ class ListadoProfesoresController extends Controller
         $errores = [];
 
         if (!Validaciones::validar_rut($request->rut_profesor)) {
-            $errores['rut_profesor'] = 'El RUT debe tener entre 7 y 8 dígitos numéricos.';
+            $errores['rut_profesor'] = 'El RUT debe estar entre 5.000.000 y 99.999.999.';
         }
 
         if (!Validaciones::validar_DV($request->dv)) {

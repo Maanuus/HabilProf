@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-4">
     @if($resultados->isEmpty())
-        <p>No se encontraron habilitaciones para este profesor.</p>
+        <p>Profesor no realizó habilitaciones profesionales.</p>
     @else
         @php
             $nombreProfesor = $resultados->first()->first()->nombre_Profesor ?? '';

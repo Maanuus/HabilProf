@@ -6,7 +6,7 @@ class Validaciones
 {
     public static function validar_rut($rut): bool
     {
-        return preg_match("/^[1-9][0-9]{6,7}$/", $rut);
+        return is_numeric($rut) && $rut >= 5000000 && $rut <= 99999999;
     }
 
     public static function validar_DV($DV): bool
@@ -19,31 +19,31 @@ class Validaciones
         return preg_match("/^(199[0-9]|20[0-3][0-9]|204[0-5])-(1|2)$/", $semestre_inicio);
     }
 
-    public static function validar_nombre($nombre):bool
+    public static function validar_nombre($nombre): bool
     {
-        return preg_match("/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,40}$/",$nombre);
+        return preg_match("/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,40}$/", $nombre);
     }
 
     public static function validar_tipoProfesor($tipo): bool
-{
-    $validos = [
-        "Profesor Guía",
-        "Profesor Tutor de Práctica",
-        "Profesor Co-Guía",
-        "Profesor Comisión"
-    ];
+    {
+        $validos = [
+            "Profesor Guía",
+            "Profesor Tutor de Práctica",
+            "Profesor Co-Guía",
+            "Profesor Comisión"
+        ];
 
-    return in_array($tipo, $validos, true);
-}
+        return in_array($tipo, $validos, true);
+    }
     public static function validar_tipoHabilitacion($tipo): bool
-{
-    $validos = [
-        "Prinv",
-        "Pring",
-        "PrTut"
-    ];
+    {
+        $validos = [
+            "Prinv",
+            "Pring",
+            "PrTut"
+        ];
 
-    return in_array($tipo, $validos, true);
-}
+        return in_array($tipo, $validos, true);
+    }
 
 }
