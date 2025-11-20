@@ -18,10 +18,6 @@ use App\Http\Controllers\RegisterController;
 // Vista raíz
 Route::get('/', fn () => redirect()->route('login'));
 
-// Página principal
-Route::get('/home', [HabilitacionListadosController::class, 'ultimasHabilitaciones'])
-    ->name('home');
-
 // Login / Register (solo invitados)
 Route::middleware('guest')->group(function () {
     Route::get('/login',    [LoginController::class, 'show'])->name('login');
@@ -74,7 +70,7 @@ Route::get('/home', [ListadoSemestralController::class, 'ultimasHabilitaciones']
     // Formulario listado semestral
 Route::get('/habilitaciones/ListadoSemestral', [ListadoSemestralController::class, 'ListadoSemestral'])
     ->name('habilitaciones.FormularioSemestral');
-    // Resultados del filtro
+    // Resultados listado semestral
 Route::post('/habilitaciones/ListadoSemestral', [ListadoSemestralController::class, 'ResultadoListadoSemestral'])
     ->name('habilitaciones.ResultadoSemestral');
 
@@ -82,8 +78,7 @@ Route::post('/habilitaciones/ListadoSemestral', [ListadoSemestralController::cla
 Route::get('/habilitaciones/ListadoProfesor', [ListadoProfesoresController::class, 'ListadoProfesores'])
     ->name('habilitaciones.FormularioProfesor');
 
-// Resultados del filtro
+// Resultados listado profesor
 Route::post('/habilitaciones/ListadoProfesor', [ListadoProfesoresController::class, 'ResultadoListadoProfesores'])
     ->name('habilitaciones.ResultadoProfesor');
-Route::post('/habilitaciones/profesor/resultados', [HabilitacionProfesorController::class, 'resultados'])
-    ->name('habilitaciones.profesor.resultados');
+
