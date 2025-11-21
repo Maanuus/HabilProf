@@ -47,24 +47,24 @@
                     <h4 class="mb-0"><a href=""><img src="{{ asset('images/ucsc_logo.png') }}" alt="Logo" width=180></a>
                     </h4>
                 </div>
-                <div class="col-auto d-flex align-items-center gap-2">   
+                <div class="col-auto d-flex align-items-center gap-2">
                     <a href="{{ route('admin.panel') }}" class="btn btn-sm btn-light text-dark">
                         <i class="bi bi-gear-fill"></i> Admin
                     </a>
-                <div class="col-auto">
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                        <button class="btn btn-outline-secondary btn-sm btn-light text-dark">Salir</button>
-                    </form>
+                    <div class="col-auto">
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button class="btn btn-outline-secondary btn-sm btn-light text-dark">Salir</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
     </header>
 
     <div class="container-fluid">
         <div class="col-md-9 col-lg-10 p-4">
             @include('partials._sync_notification')
-            
+
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4>Gestión de Habilitaciones Profesionales</h4>
             </div>
@@ -134,7 +134,6 @@
                             <th>Semestre</th>
                             <th>Nota</th>
                             <th>Descripción</th>
-                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -146,19 +145,6 @@
                                 <td>{{ $h->semestre_inicio }}</td>
                                 <td>{{ $h->nota ?? '-' }}</td>
                                 <td>{{ $h->descripcion ?? '-' }}</td>
-
-                                <td>
-                                    <a href="{{ route('habilitaciones.edit', ['id' => 1]) }}"
-                                        class="btn btn-sm btn-primary">
-                                        Editar
-                                    </a>
-
-                                    <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                        data-bs-target="#confirmDeleteModal" data-id="1">
-                                        <i class="bi bi-trash3"></i>
-                                    </a>
-                                </td>
-
                             </tr>
                         @empty
                             <tr>
@@ -167,103 +153,13 @@
                         @endforelse
                     </tbody>
                 </table>
-                <!-- Constanza -->
-                <!-- Modal de confirmación de eliminación -->
-                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-danger text-white">
-                                <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                ¿Seguro que deseas eliminar <strong id="deleteItemName">este registro</strong>?
-                                <p class="text-muted small mb-0 mt-2">(Esto es solo una simulación, no eliminará
-                                    nada aún.)</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Eliminar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title" id="editModalLabel">Editar habilitación</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold">Nombre Alumno</label>
-                                            <input type="text" class="form-control" value="Ejemplo Alumno" disabled>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-semibold">Tipo Habilitación</label>
-                                            <select class="form-select">
-                                                <option>PrIng</option>
-                                                <option>PrInv</option>
-                                                <option>PrTut</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label fw-semibold">Descripción</label>
-                                            <textarea class="form-control" rows="3">Texto de ejemplo</textarea>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Guardar
-                                    cambios</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
-    </div>
-    </div>
-    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const modalEl = document.getElementById('confirmDeleteModal');
-
-            modalEl.addEventListener('show.bs.modal', function (event) {
-                const btn = event.relatedTarget;
-                const nombre = btn.getAttribute('data-nombre') || 'este registro';
-
-                modalEl.querySelector('#deleteItemName').textContent = nombre;
-            });
-        });
-    </script>
-
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const modalEl = document.getElementById('confirmDeleteModal');
-
-        modalEl.addEventListener('show.bs.modal', function (event) {
-            const btn = event.relatedTarget;
-            const nombre = btn.getAttribute('data-nombre') || 'este registro';
-            modalEl.querySelector('#deleteItemName').textContent = nombre;
-        });
-    });
-</script>
 
 </html>

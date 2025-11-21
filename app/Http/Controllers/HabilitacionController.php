@@ -18,22 +18,22 @@ class HabilitacionController extends Controller
         $clean = strtoupper(preg_replace('/[^0-9K]/', '', $rut));
         // Número = todo menos el último carácter; DV = último
         $numero = (int) substr($clean, 0, -1);
-        $dv     = substr($clean, -1);
+        $dv = substr($clean, -1);
         return [$numero, $dv];
     }
 
     public function store(Request $request)
     {
         [$rutAl, $dvAl] = $this->splitRut($request->rut);
-        $id   = (int) $request->id_habilitacion;
+        $id = (int) $request->id_habilitacion;
         $tipo = $request->tipo_HabilProf;
 
         $descripcion = ($tipo === 'PrTut') ? '' : ($request->descripcion ?? '');
 
-       
+
         $rutSup = $request->rut_profesor_supervisor ? $this->splitRut($request->rut_profesor_supervisor) : null;
         $rutCom = $request->rut_profesor_comision ? $this->splitRut($request->rut_profesor_comision) : null;
-        $rutCg  = $request->rut_profesor_coguia   ? $this->splitRut($request->rut_profesor_coguia)   : null;
+        $rutCg = $request->rut_profesor_coguia ? $this->splitRut($request->rut_profesor_coguia) : null;
 
         // id_habilitacion único
         $idExiste = DB::connection('pgsql2')
@@ -62,7 +62,7 @@ class HabilitacionController extends Controller
                     'rut_profesor_supervisor' => 'Debe indicar el RUT del Profesor Tutor de Práctica.'
                 ])->withInput();
             }
-            [$rp,$dvP] = $rutSup;
+            [$rp, $dvP] = $rutSup;
             $supExiste = DB::connection('pgsql2')->table('Profesor')
                 ->where('rut_Profesor', $rp)
                 ->where('DV', $dvP)
@@ -74,7 +74,7 @@ class HabilitacionController extends Controller
             }
         } elseif ($tipo === 'Pring' || $tipo === 'Prinv') {
             if ($rutCom) {
-                [$rp,$dvP] = $rutCom;
+                [$rp, $dvP] = $rutCom;
                 $comExiste = DB::connection('pgsql2')->table('Profesor')
                     ->where('rut_Profesor', $rp)
                     ->where('DV', $dvP)
@@ -86,7 +86,7 @@ class HabilitacionController extends Controller
                 }
             }
             if ($rutCg) {
-                [$rp,$dvP] = $rutCg;
+                [$rp, $dvP] = $rutCg;
                 $cgExiste = DB::connection('pgsql2')->table('Profesor')
                     ->where('rut_Profesor', $rp)
                     ->where('DV', $dvP)
@@ -103,11 +103,11 @@ class HabilitacionController extends Controller
             // Habilitación base
             DB::connection('pgsql2')->table('Habilitacion_Profesional')->insert([
                 'id_Habilitacion' => $id,
-                'rut_Alumno'      => $rutAl,
-                'DV'              => $dvAl,
-                'tipo_HabilProf'  => $tipo,
-                'nota'            => null,
-                'descripcion'     => $descripcion,
+                'rut_Alumno' => $rutAl,
+                'DV' => $dvAl,
+                'tipo_HabilProf' => $tipo,
+                'nota' => null,
+                'descripcion' => $descripcion,
                 'semestre_inicio' => $request->semestre_inicio ?? null,
             ]);
 
@@ -125,7 +125,7 @@ class HabilitacionController extends Controller
                 DB::connection('pgsql2')->table('PrTut')->updateOrInsert(
                     ['id_Habilitacion' => $id],
                     [
-                        'nombre_Empresa'    => $request->nombre_Empresa ?? '',
+                        'nombre_Empresa' => $request->nombre_Empresa ?? '',
                         'nombre_Supervisor' => $request->nombre_Supervisor ?? '',
                     ]
                 );
@@ -135,49 +135,55 @@ class HabilitacionController extends Controller
             $nextId = fn() => (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
 
             if ($tipo === 'PrTut' && $rutSup) {
-                [$rp,$dvP] = $rutSup;
+                [$rp, $dvP] = $rutSup;
                 $ex = DB::connection('pgsql2')->table('Supervisa')->where([
-                    'id_Habilitacion' => $id, 'rut_Profesor' => $rp, 'DV' => $dvP,
+                    'id_Habilitacion' => $id,
+                    'rut_Profesor' => $rp,
+                    'DV' => $dvP,
                 ])->exists();
                 if (!$ex) {
                     DB::connection('pgsql2')->table('Supervisa')->insert([
-                        'id_Supervisa'    => $nextId(),
+                        'id_Supervisa' => $nextId(),
                         'id_Habilitacion' => $id,
-                        'rut_Profesor'    => $rp,
-                        'DV'              => $dvP,
-                        'tipo_Profesor'   => 'Profesor Tutor de Práctica',
+                        'rut_Profesor' => $rp,
+                        'DV' => $dvP,
+                        'tipo_Profesor' => 'Profesor Tutor de Práctica',
                     ]);
                 }
             }
 
             if (($tipo === 'Pring' || $tipo === 'Prinv') && $rutCom) {
-                [$rp,$dvP] = $rutCom;
+                [$rp, $dvP] = $rutCom;
                 $ex = DB::connection('pgsql2')->table('Supervisa')->where([
-                    'id_Habilitacion' => $id, 'rut_Profesor' => $rp, 'DV' => $dvP,
+                    'id_Habilitacion' => $id,
+                    'rut_Profesor' => $rp,
+                    'DV' => $dvP,
                 ])->exists();
                 if (!$ex) {
                     DB::connection('pgsql2')->table('Supervisa')->insert([
-                        'id_Supervisa'    => $nextId(),
+                        'id_Supervisa' => $nextId(),
                         'id_Habilitacion' => $id,
-                        'rut_Profesor'    => $rp,
-                        'DV'              => $dvP,
-                        'tipo_Profesor'   => 'Profesor Comisión',
+                        'rut_Profesor' => $rp,
+                        'DV' => $dvP,
+                        'tipo_Profesor' => 'Profesor Comisión',
                     ]);
                 }
             }
 
             if (($tipo === 'Pring' || $tipo === 'Prinv') && $rutCg) {
-                [$rp,$dvP] = $rutCg;
+                [$rp, $dvP] = $rutCg;
                 $ex = DB::connection('pgsql2')->table('Supervisa')->where([
-                    'id_Habilitacion' => $id, 'rut_Profesor' => $rp, 'DV' => $dvP,
+                    'id_Habilitacion' => $id,
+                    'rut_Profesor' => $rp,
+                    'DV' => $dvP,
                 ])->exists();
                 if (!$ex) {
                     DB::connection('pgsql2')->table('Supervisa')->insert([
-                        'id_Supervisa'    => $nextId(),
+                        'id_Supervisa' => $nextId(),
                         'id_Habilitacion' => $id,
-                        'rut_Profesor'    => $rp,
-                        'DV'              => $dvP,
-                        'tipo_Profesor'   => 'Profesor Co-Guía',
+                        'rut_Profesor' => $rp,
+                        'DV' => $dvP,
+                        'tipo_Profesor' => 'Profesor Co-Guía',
                     ]);
                 }
             }
@@ -185,50 +191,6 @@ class HabilitacionController extends Controller
 
         return redirect()->route('home')->with('success', 'Habilitación guardada.');
     }
-
-    public function edit($id)
-    {
-    switch ((int) $id) {
-        case 1:
-            $habilitacion = [
-                'id_habilitacion' => 1,
-                'rut' => '12.345.678-9',
-                'nombre_alumno' => 'María González',
-                'carrera' => 'Ingeniería Civil Informática',
-                'correo_alumno' => 'maria@ucsc.cl',
-                'tipo_HabilProf' => 'PrIng',
-                'titulo' => 'Sistema de Monitoreo Energético',
-                'descripcion' => 'Proyecto sobre eficiencia energética en hogares.',
-                'rut_profesor_comision' => '11111111-1',
-                'rut_profesor_coguia' => '',
-                'semestre_inicio' => '2025-1',
-                'nombre_Empresa' => '',
-                'nombre_Supervisor' => '',
-            ];
-            break;
-
-        default:
-            // Datos por defecto si el id no existe en el switch
-            $habilitacion = [
-                'id_habilitacion' => $id,
-                'rut' => '12345678-9',
-                'nombre_alumno' => 'Juan Pérez',
-                'carrera' => 'Ingeniería Civil Informática',
-                'correo_alumno' => 'juan.perez@alumnos.ucsc.cl',
-                'tipo_HabilProf' => 'PrIng',
-                'titulo' => 'Sistema de Gestión de Prácticas',
-                'descripcion' => 'Desarrollo de un sistema web para gestión de prácticas profesionales.',
-                'rut_profesor_comision' => '11111111-1',
-                'rut_profesor_coguia' => '22222222-2',
-                'semestre_inicio' => '2025-1',
-                'nombre_Empresa' => '',
-                'nombre_Supervisor' => '',
-            ];
-            break;
-    }
-
-    return view('habilitaciones.edit', compact('habilitacion'));
-}
 
     public function update(Request $request, $id)
     {

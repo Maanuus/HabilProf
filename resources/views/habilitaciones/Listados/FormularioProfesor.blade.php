@@ -24,7 +24,7 @@
                     <label for="rut_profesor" class="form-label">RUT Profesor</label>
                     <input type="text" name="rut_profesor" id="rut_profesor"
                         class="form-control @error('rut_profesor') is-invalid @enderror" value="{{ old('rut_profesor') }}"
-                        required pattern="^(5[0-9]{6}|[6-9][0-9]{7})$"
+                        required pattern="^([5-9][0-9]{6}|[1-9][0-9]{7})$"
                         title="El RUT debe estar entre 5.000.000 y 99.999.999">
 
 
