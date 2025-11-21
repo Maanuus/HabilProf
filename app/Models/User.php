@@ -16,7 +16,6 @@ class User extends Authenticatable
 
     protected $hidden = ['password','remember_token'];
 
-    // Laravel hashea automáticamente al asignar password
     protected $casts = [
         'password' => 'hashed',
     ];
