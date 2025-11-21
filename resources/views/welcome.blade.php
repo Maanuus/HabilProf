@@ -121,7 +121,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-table me-2"></i>Habilitaciones Registradas</h6>
+            <h6 class="mb-0"><i class="bi bi-table me-2"></i>Últimas 5 Habilitaciones Registradas</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
