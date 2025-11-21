@@ -48,17 +48,6 @@ class HabilitacionController extends Controller
         }
 
         DB::connection('pgsql2')->transaction(function () use ($request, $rutAl, $dvAl, $id, $tipo, $descripcion, $rutSup, $rutCom, $rutCg) {
-
-            // Alumno
-        /*    DB::connection('pgsql2')->table('Alumno')->updateOrInsert(
-                ['rut_Alumno' => $rutAl, 'DV' => $dvAl],
-                [
-                    'nombre_Alumno' => $request->nombre_alumno ?? '',
-                    'carrera'       => $request->carrera ?? '',
-                    'correo_Alumno' => $request->correo_alumno ?? '',
-                ]
-            );
-*/
             // Habilitación
             DB::connection('pgsql2')->table('Habilitacion_Profesional')->insert([
                 'id_Habilitacion' => $id,
@@ -95,16 +84,6 @@ class HabilitacionController extends Controller
             if ($rutSup) {
                 [$rutP, $dvP] = $rutSup;
 
-  /*              // 1) Asegurar existencia en Profesor
-                DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
-                    ['rut_Profesor' => $rutP, 'DV' => $dvP],
-                    [
-                        'nombre_Profesor' => $request->nombre_profesor_supervisor ?? '',
-                        'correo_Profesor' => $request->correo_profesor_supervisor ?? '',
-                    ]
-                );
-*/
-                // 2) Insertar relación en Supervisa si no existe
                 $exists = DB::connection('pgsql2')->table('Supervisa')->where([
                     'id_Habilitacion' => $id,
                     'rut_Profesor'    => $rutP,
@@ -128,16 +107,6 @@ class HabilitacionController extends Controller
             if ($rutCom) {
                 [$rutP, $dvP] = $rutCom;
 
-                // 1) Asegurar existencia en Profesor
-                /*DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
-                    ['rut_Profesor' => $rutP, 'DV' => $dvP],
-                    [
-                        'nombre_Profesor' => $request->nombre_profesor_comision ?? '',
-                        'correo_Profesor' => $request->correo_profesor_comision ?? '',
-                    ]
-                );*/
-
-                // 2) Insertar relación en Supervisa si no existe
                 $exists = DB::connection('pgsql2')->table('Supervisa')->where([
                     'id_Habilitacion' => $id,
                     'rut_Profesor'    => $rutP,
@@ -160,15 +129,7 @@ class HabilitacionController extends Controller
             // Supervisa - Profesor Co-guía
             if ($rutCg) {
                 [$rutP, $dvP] = $rutCg;
-
-  /*              DB::connection('pgsql2')->table('Profesor')->updateOrInsert(
-                    ['rut_Profesor' => $rutP, 'DV' => $dvP],
-                    [
-                        'nombre_Profesor' => $request->nombre_profesor_coguia ?? '',
-                        'correo_Profesor' => $request->correo_profesor_coguia ?? '',
-                    ]
-                );
-*/
+                
                 $exists = DB::connection('pgsql2')->table('Supervisa')->where([
                     'id_Habilitacion' => $id,
                     'rut_Profesor'    => $rutP,
