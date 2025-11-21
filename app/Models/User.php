@@ -9,7 +9,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $connection = 'pgsql2';   // <- tu BD HabilProf2
+    protected $connection = 'pgsql2';
     protected $table = 'users';
 
     protected $fillable = ['name','rut','password'];
