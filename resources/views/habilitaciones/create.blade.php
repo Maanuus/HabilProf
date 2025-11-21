@@ -57,7 +57,7 @@
 
                             <div class="row g-3">
                                 <div class="col-md-5">
-                                    <label class="form-label">RUT Alumno </label>
+                                    <label class="form-label">RUT Alumno</label>
                                     <input 
                                         type="text" 
                                         name="rut" 
@@ -119,88 +119,68 @@
                                     </select>
                                 </div>
 
-                                <div class="col-md-5">
-                                    <label class="form-label">RUT Profesor Supervisor</label>
-                                    <input 
-                                        type="text" 
-                                        name="rut_profesor_supervisor" 
-                                        class="form-control" 
-                                        placeholder="Ej: 12345678-9"
-                                        value="{{ old('rut_profesor_supervisor') }}" 
-                                        minlength="8"
-                                        maxlenght="9"
-                                        required>
-                                </div>
-
-                                <div class="col-md-7">
-                                    <label class="form-label">Nombre Profesor Supervisor</label>
-                                    <input 
-                                        type="text" 
-                                        name="nombre_profesor_supervisor" 
-                                        class="form-control" 
-                                        placeholder="Nombre Completo"
-                                        value="{{ old('nombre_profesor_supervisor') }}"
-                                        maxlength="40"
-                                        required>
-                                </div>
-
                                 <!-- Datos Pring / Prinv -->
                                 <div id="grupoProyecto" class="col-12 mt-3" style="display:none;">
                                     <label>Título</label>
-                                    <input type="text" 
-                                        name="titulo" 
-                                        class="form-control" 
-                                        value="{{ old('titulo') }}"
-                                        maxlenght="100">
+                                    <input type="text" name="titulo" class="form-control" value="{{ old('titulo') }}" maxlength="100">
 
                                     <label class="mt-2">Descripción</label>
-                                    <textarea name="descripcion" 
-                                        class="form-control"
-                                        maxlenght="500">{{ old('descripcion') }}</textarea>
+                                    <textarea name="descripcion" class="form-control" maxlength="500">{{ old('descripcion') }}</textarea>
 
-                                    <label class="mt-2">RUT Profesor Comisión</label>
-                                    <input type="text" 
-                                        name="rut_profesor_comision" 
-                                        class="form-control" 
-                                        value="{{ old('rut_profesor_comision') }}"
-                                        minlength="8"
-                                        maxlenght="9">
+                                    <div class="row g-3 mt-1">
+                                        <div class="col-md-6">
+                                        <label class="form-label">RUT Profesor Comisión</label>
+                                        <input type="text" name="rut_profesor_comision" class="form-control"
+                                                placeholder="Ej: 12345678-9" value="{{ old('rut_profesor_comision') }}"
+                                                minlength="8" maxlength="10">
+                                        </div>
+                                        <div class="col-md-6">
+                                        <label class="form-label">RUT Profesor Co-guía (opcional)</label>
+                                        <input type="text" name="rut_profesor_coguia" class="form-control"
+                                                placeholder="Ej: 12345678-9" value="{{ old('rut_profesor_coguia') }}"
+                                                minlength="8" maxlength="10">
+                                        </div>
 
-                                    <label class="mt-2">RUT Profesor Co-guía (opcional)</label>
-                                    <input type="text" 
-                                        name="rut_profesor_coguia" 
-                                        class="form-control" 
-                                        value="{{ old('rut_profesor_coguia') }}"
-                                        minlength="8"
-                                        maxlenght="9">
+                                        <div class="col-12">
+                                            <label class="form-label">RUT Profesor Supervisor</label>
+                                            <input
+                                                type="text"
+                                                name="rut_profesor_supervisor"
+                                                class="form-control"
+                                                placeholder="Ej: 12345678-9"
+                                                value="{{ old('rut_profesor_supervisor') }}"
+                                                minlength="8"
+                                                maxlength="10"
+                                                required>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Datos PrTut -->
                                 <div id="grupoPractica" class="col-12 mt-3" style="display:none;">
                                     <label>Nombre Empresa</label>
-                                    <input type="text" 
-                                        name="nombre_Empresa" 
-                                        class="form-control" 
-                                        value="{{ old('nombre_Empresa') }}"
-                                        maxlenght="100">
+                                    <input type="text" name="nombre_Empresa" class="form-control"
+                                            value="{{ old('nombre_Empresa') }}" maxlength="100">
 
                                     <label class="mt-2">Nombre Supervisor Empresa</label>
-                                    <input type="text" 
-                                        name="nombre_Supervisor" 
-                                        class="form-control" 
-                                        value="{{ old('nombre_Supervisor') }}"
-                                        maxlenght="80">
+                                    <input type="text" name="nombre_Supervisor" class="form-control"
+                                            value="{{ old('nombre_Supervisor') }}" maxlength="80">
+
+                                    <div class="row g-3 mt-1">
+                                        <div class="col-md-6">
+                                        <label class="form-label">RUT Profesor Supervisor</label>
+                                        <input type="text" name="rut_profesor_supervisor" class="form-control"
+                                                placeholder="Ej: 12345678-9" value="{{ old('rut_profesor_supervisor') }}"
+                                                minlength="8" maxlength="10">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label class="form-label">Semestre Inicio (puede quedar vacío)</label>
+                                    <input type="text" name="semestre_inicio" class="form-control"
+                                            value="{{ old('semestre_inicio') }}" placeholder="Ej: 2025-1">
                                 </div>
 
-                                <div class="col-md-6 mt-3">
-                                    <label>Semestre Inicio (puede quedar vacío)</label>
-                                    <input 
-                                        type="text" 
-                                        name="semestre_inicio" 
-                                        class="form-control" 
-                                        value="{{ old('semestre_inicio') }}" 
-                                        placeholder="Ej: 2025-1">
-                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary mt-3">Guardar Habilitación</button>
@@ -220,25 +200,38 @@
         const grupoProyecto = document.getElementById('grupoProyecto');
         const grupoPractica = document.getElementById('grupoPractica');
 
-        tipoSelect.addEventListener('change', function() {
-            if(this.value === 'Pring' || this.value === 'Prinv'){
-                grupoProyecto.style.display = 'block';
-                grupoPractica.style.display = 'none';
-            } else if(this.value === 'PrTut'){
-                grupoProyecto.style.display = 'none';
-                grupoPractica.style.display = 'block';
-            } else {
-                grupoProyecto.style.display = 'none';
-                grupoPractica.style.display = 'none';
-            }
-        });
+        function setGroupEnabled(groupEl, enabled) {
+            groupEl.style.display = enabled ? 'block' : 'none';
+            groupEl.querySelectorAll('input, textarea, select').forEach(el => {
+            el.disabled = !enabled;
+            // No pongas required por defecto; lo controlamos abajo por tipo
+            el.removeAttribute('required');
+            });
+        }
 
-        window.addEventListener('load', function() {
-            const tipo = tipoSelect.value;
-            if(tipo === 'Pring' || tipo === 'Prinv') grupoProyecto.style.display = 'block';
-            if(tipo === 'PrTut') grupoPractica.style.display = 'block';
-        });
+        function updateUI() {
+            const v = tipoSelect.value;
+
+            if (v === 'Pring' || v === 'Prinv') {
+            setGroupEnabled(grupoProyecto, true);
+            setGroupEnabled(grupoPractica, false);
+            // En proyectos, todo opcional por ahora (comisión/co-guía)
+            } else if (v === 'PrTut') {
+            setGroupEnabled(grupoProyecto, false);
+            setGroupEnabled(grupoPractica, true);
+            // En práctica, supervisor obligatorio
+            const sup = document.querySelector('[name="rut_profesor_supervisor"]');
+            if (sup) sup.setAttribute('required', 'required');
+            } else {
+            setGroupEnabled(grupoProyecto, false);
+            setGroupEnabled(grupoPractica, false);
+            }
+        }
+
+        tipoSelect.addEventListener('change', updateUI);
+        window.addEventListener('load', updateUI);
     </script>
+
     @endsection
 </body>
 </html>
