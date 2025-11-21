@@ -71,13 +71,12 @@
 
                                 <div class="col-md-7">
                                     <label class="form-label">Nombre Alumno</label>
-                                    <input 
-                                        type="text" 
+                                    <input type="text" 
                                         name="nombre_alumno" 
                                         class="form-control" 
                                         placeholder="Nombre Completo" 
                                         value="{{ old('nombre_alumno') }}" 
-                                        maxlenght="40"
+                                        maxlength="40"
                                         required>
                                 </div>
 
@@ -180,9 +179,7 @@
                                     <input type="text" name="semestre_inicio" class="form-control"
                                             value="{{ old('semestre_inicio') }}" placeholder="Ej: 2025-1">
                                 </div>
-
                             </div>
-
                             <button type="submit" class="btn btn-primary mt-3">Guardar Habilitación</button>
                         </form>
                     </div>
@@ -204,7 +201,6 @@
             groupEl.style.display = enabled ? 'block' : 'none';
             groupEl.querySelectorAll('input, textarea, select').forEach(el => {
             el.disabled = !enabled;
-            // No pongas required por defecto; lo controlamos abajo por tipo
             el.removeAttribute('required');
             });
         }
@@ -215,11 +211,11 @@
             if (v === 'Pring' || v === 'Prinv') {
             setGroupEnabled(grupoProyecto, true);
             setGroupEnabled(grupoPractica, false);
-            // En proyectos, todo opcional por ahora (comisión/co-guía)
+            // En proyectos
             } else if (v === 'PrTut') {
             setGroupEnabled(grupoProyecto, false);
             setGroupEnabled(grupoPractica, true);
-            // En práctica, supervisor obligatorio
+            // En práctica
             const sup = document.querySelector('[name="rut_profesor_supervisor"]');
             if (sup) sup.setAttribute('required', 'required');
             } else {

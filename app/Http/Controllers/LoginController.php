@@ -17,7 +17,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $validated = $request->validate([
-            'rut'      => ['required','string','max:12'],
+            'rut'      => ['required','string','max:10'],
             'password' => ['required','string'],
         ]);
 
