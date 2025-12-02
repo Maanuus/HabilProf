@@ -78,12 +78,26 @@ class ListadoSemestralController extends Controller
                     'nombre_Alumno' => "Nombre del alumno debe tener un máximo de 40 caracteres."
                 ]);
             }
-
             if (!Validaciones::validar_tipoHabilitacion($registro->tipo_HabilProf)) {
                 throw ValidationException::withMessages([
                     'tipo_Profesor' => "Tipo Habilitación no válido."
                 ]);
             }
+            if (!Validaciones::validar_nombre_empresa($registro->nombre_Empresa)) {
+                throw ValidationException::withMessages(['nombre_Empresa' => "Nombre empresa debe tener una maximo de 100 caracteres"]);
+            }
+            if (!Validaciones::validar_nombre_supervisor($registro->nombre_Supervisor)) {
+                throw ValidationException::withMessages(['nombre_Supervisor' => "Nombre supervisor debe tener una maximo de 80 caracteres"]);
+            }
+            if (!Validaciones::validar_titulo($registro->titulo_Pring)) {
+                throw ValidationException::withMessages(['titulo_Pring' => "Titulo proyecto ingeniería debe tener una maximo de 100 caracteres"]);
+            }
+            if (!Validaciones::validar_titulo($registro->titulo_Prinv)) {
+                throw ValidationException::withMessages(['titulo_Prinv' => "Titulo proyecto investigación debe tener una maximo de 100 caracteres"]);
+            }
+            if (!Validaciones::validar_descripcion($registro->descripcion)) {
+                    throw ValidationException::withMessages(['descripcion' => "descripción debe tener una maximo de 100 caracteres"]);
+                }
         }
 
 
