@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\Validaciones;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Servicio de sincronización mínima con la BD Modulos.
@@ -25,8 +27,8 @@ class ModulosSyncService
             ->table('Alumno')
             ->where(function ($q) {
                 $q->whereNull('nombre_Alumno')->orWhere('nombre_Alumno', '')
-                  ->orWhereNull('carrera')->orWhere('carrera', '')
-                  ->orWhereNull('correo_Alumno')->orWhere('correo_Alumno', '');
+                    ->orWhereNull('carrera')->orWhere('carrera', '')
+                    ->orWhereNull('correo_Alumno')->orWhere('correo_Alumno', '');
             })
             ->get();
 
@@ -34,7 +36,7 @@ class ModulosSyncService
             ->table('Profesor')
             ->where(function ($q) {
                 $q->whereNull('nombre_Profesor')->orWhere('nombre_Profesor', '')
-                  ->orWhereNull('correo_Profesor')->orWhere('correo_Profesor', '');
+                    ->orWhereNull('correo_Profesor')->orWhere('correo_Profesor', '');
             })
             ->get();
 
@@ -74,6 +76,20 @@ class ModulosSyncService
             $clave = $mod->rut_Alumno . '-' . $mod->DV;
             if (!isset($mapAlumnosDestino[$clave])) {
                 // Crear nuevo alumno en destino
+                if (!Validaciones::validar_rut($mod->rut_Alumno)) {
+                    $res['errores'][] = "RUT inválido para alumno $clave ({$mod->rut_Alumno})";
+                    continue;
+                }
+
+                if (!Validaciones::validar_DV($mod->DV)) {
+                    $res['errores'][] = "DV inválido para alumno $clave ({$mod->DV})";
+                    continue;
+                }
+
+                if (!Validaciones::validar_nombre($mod->nombre_Alumno ?? '')) {
+                    $res['errores'][] = "Nombre alumno inválido para $clave ({$mod->nombre_Alumno})";
+                    continue;
+                }
                 $insert = [
                     'rut_Alumno' => $mod->rut_Alumno,
                     'DV' => $mod->DV,
@@ -193,7 +209,9 @@ class ModulosSyncService
     public function sincronizarNotas(): array
     {
         $notas = DB::connection('Modulos')->table('Notas')->get();
-        $total = 0; $aprobadas = 0; $reprobadas = 0;
+        $total = 0;
+        $aprobadas = 0;
+        $reprobadas = 0;
 
         foreach ($notas as $n) {
             $total++;
@@ -209,7 +227,7 @@ class ModulosSyncService
             $estado = $n->nota_Alumno >= 4.0 ? 'Aprobado' : 'Reprobado';
 
             $notaAnterior = $hab->nota;
-            
+
             DB::connection('pgsql2')->table('Habilitacion_Profesional')
                 ->where('id_Habilitacion', $hab->id_Habilitacion)
                 ->update([
@@ -222,7 +240,11 @@ class ModulosSyncService
                 $this->registrarCambio('Habilitacion_Profesional', $n->rut_Alumno . '-' . $n->DV, 'nota', $notaAnterior, $n->nota_Alumno);
             }
 
-            if ($estado === 'Aprobado') { $aprobadas++; } else { $reprobadas++; }
+            if ($estado === 'Aprobado') {
+                $aprobadas++;
+            } else {
+                $reprobadas++;
+            }
         }
 
         return [
@@ -261,7 +283,7 @@ class ModulosSyncService
         ];
 
         $archivo = storage_path('logs/sync_changes.json');
-        
+
         // Crear directorio si no existe
         if (!file_exists(dirname($archivo))) {
             mkdir(dirname($archivo), 0755, true);
