@@ -101,11 +101,11 @@ return [
         // Base de pruebas HabilProf2
         'pgsql2' => [
             'driver' => 'pgsql',
-            'host' => env('DB_PGSQL2_HOST', '127.0.0.1'),
-            'port' => env('DB_PGSQL2_PORT', '5432'),
-            'database' => env('DB_PGSQL2_DATABASE', 'HabilProf2'),
-            'username' => env('DB_PGSQL2_USERNAME', 'postgres'),
-            'password' => env('DB_PGSQL2_PASSWORD', '1234*'),
+            'host' => env('DB_PGSQL2_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('DB_PGSQL2_PORT', env('DB_PORT', '5432')),
+            'database' => env('DB_PGSQL2_DATABASE', env('DB_DATABASE', 'HabilProf2')),
+            'username' => env('DB_PGSQL2_USERNAME', env('DB_USERNAME', 'postgres')),
+            'password' => env('DB_PGSQL2_PASSWORD', env('DB_PASSWORD', '1234*')),
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',

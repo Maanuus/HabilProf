@@ -16,12 +16,13 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        $rut = $this->normalizeRut($request->input('rut', ''));
+        $request->merge(['rut' => $rut]);
+
         $validated = $request->validate([
-            'rut'      => ['required','string','max:10'],
+            'rut'      => ['required','string','max:12'],
             'password' => ['required','string'],
         ]);
-
-        $rut = $this->normalizeRut($validated['rut']);
 
         $ok = Auth::attempt([
             'rut'      => $rut,

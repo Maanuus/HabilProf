@@ -32,20 +32,6 @@ class RegisterController extends Controller
             'password.min'          => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
 
-        [$rutNum, $dv] = $this->splitRut($rutNormalizado);
-
-        $existeProfesor = DB::connection('pgsql2')
-            ->table('Profesor')
-            ->where('rut_Profesor', $rutNum)
-            ->where('DV', $dv)
-            ->exists();
-
-        if (!$existeProfesor) {
-            return back()
-                ->withErrors(['rut' => 'El RUT ingresado no corresponde a un profesor registrado en los sistemas de la UCSC.'])
-                ->withInput();
-        }
-
         // Crea el usuario en 'users' (encripta la contraseña)
         User::create([
             'name'     => $validated['name'],

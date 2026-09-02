@@ -9,7 +9,6 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $connection = 'pgsql2';
     protected $table = 'users';
 
     protected $fillable = ['name','rut','password'];
