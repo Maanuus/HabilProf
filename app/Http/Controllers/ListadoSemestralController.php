@@ -29,8 +29,7 @@ class ListadoSemestralController extends Controller
         $semestre_inicio = $request->input('semestre_inicio');
         $solo_semestre = $request->has('solo_semestre');
 
-        $query = DB::connection('pgsql2')
-            ->table('Alumno')
+        $query = DB::table('Alumno')
             ->join('Habilitacion_Profesional', 'Habilitacion_Profesional.rut_Alumno', '=', 'Alumno.rut_Alumno')
             ->leftJoin('Pring', 'Pring.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
             ->leftJoin('Prinv', 'Prinv.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
@@ -107,8 +106,7 @@ class ListadoSemestralController extends Controller
 
     public function ultimasHabilitaciones()
     {
-        $ultimas = DB::connection('pgsql2')
-            ->table('Alumno')
+        $ultimas = DB::table('Alumno')
             ->join('Habilitacion_Profesional', 'Habilitacion_Profesional.rut_Alumno', '=', 'Alumno.rut_Alumno')
             ->select(
                 'Alumno.rut_Alumno',
@@ -151,20 +149,17 @@ class ListadoSemestralController extends Controller
 
 
         // Conteo
-        $countPring = DB::connection('pgsql2')
-            ->table('Habilitacion_Profesional')
+        $countPring = DB::table('Habilitacion_Profesional')
             ->where('tipo_HabilProf', 'Pring')
             ->whereNull('nota')
             ->count();
 
-        $countPrinv = DB::connection('pgsql2')
-            ->table('Habilitacion_Profesional')
+        $countPrinv = DB::table('Habilitacion_Profesional')
             ->where('tipo_HabilProf', 'Prinv')
             ->whereNull('nota')
             ->count();
 
-        $countPrTut = DB::connection('pgsql2')
-            ->table('Habilitacion_Profesional')
+        $countPrTut = DB::table('Habilitacion_Profesional')
             ->where('tipo_HabilProf', 'PrTut')
             ->whereNull('nota')
             ->count();

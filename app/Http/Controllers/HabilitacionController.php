@@ -36,8 +36,7 @@ class HabilitacionController extends Controller
         $rutCg = $request->rut_profesor_coguia ? $this->splitRut($request->rut_profesor_coguia) : null;
 
         // id_habilitacion único
-        $idExiste = DB::connection('pgsql2')
-            ->table('Habilitacion_Profesional')
+        $idExiste = DB::table('Habilitacion_Profesional')
             ->where('id_Habilitacion', $id)
             ->exists();
         if ($idExiste) {
@@ -46,7 +45,7 @@ class HabilitacionController extends Controller
             ])->withInput();
         }
 
-        $alumnoExiste = DB::connection('pgsql2')->table('Alumno')
+        $alumnoExiste = DB::table('Alumno')
             ->where('rut_Alumno', $rutAl)
             ->where('DV', $dvAl)
             ->exists();
@@ -63,7 +62,7 @@ class HabilitacionController extends Controller
                 ])->withInput();
             }
             [$rp, $dvP] = $rutSup;
-            $supExiste = DB::connection('pgsql2')->table('Profesor')
+            $supExiste = DB::table('Profesor')
                 ->where('rut_Profesor', $rp)
                 ->where('DV', $dvP)
                 ->exists();
@@ -75,7 +74,7 @@ class HabilitacionController extends Controller
         } elseif ($tipo === 'Pring' || $tipo === 'Prinv') {
             if ($rutCom) {
                 [$rp, $dvP] = $rutCom;
-                $comExiste = DB::connection('pgsql2')->table('Profesor')
+                $comExiste = table('Profesor')
                     ->where('rut_Profesor', $rp)
                     ->where('DV', $dvP)
                     ->exists();
@@ -87,7 +86,7 @@ class HabilitacionController extends Controller
             }
             if ($rutCg) {
                 [$rp, $dvP] = $rutCg;
-                $cgExiste = DB::connection('pgsql2')->table('Profesor')
+                $cgExiste = DB::table('Profesor')
                     ->where('rut_Profesor', $rp)
                     ->where('DV', $dvP)
                     ->exists();
@@ -99,9 +98,9 @@ class HabilitacionController extends Controller
             }
         }
 
-        DB::connection('pgsql2')->transaction(function () use ($request, $rutAl, $dvAl, $id, $tipo, $descripcion, $rutSup, $rutCom, $rutCg) {
+        DB::transaction(function () use ($request, $rutAl, $dvAl, $id, $tipo, $descripcion, $rutSup, $rutCom, $rutCg) {
             // Habilitación base
-            DB::connection('pgsql2')->table('Habilitacion_Profesional')->insert([
+            DB::table('Habilitacion_Profesional')->insert([
                 'id_Habilitacion' => $id,
                 'rut_Alumno' => $rutAl,
                 'DV' => $dvAl,
@@ -112,17 +111,17 @@ class HabilitacionController extends Controller
             ]);
 
             if ($tipo === 'Pring') {
-                DB::connection('pgsql2')->table('Pring')->updateOrInsert(
+                DB::table('Pring')->updateOrInsert(
                     ['id_Habilitacion' => $id],
                     ['titulo' => $request->titulo ?? '']
                 );
             } elseif ($tipo === 'Prinv') {
-                DB::connection('pgsql2')->table('Prinv')->updateOrInsert(
+                DB::table('Prinv')->updateOrInsert(
                     ['id_Habilitacion' => $id],
                     ['titulo' => $request->titulo ?? '']
                 );
             } elseif ($tipo === 'PrTut') {
-                DB::connection('pgsql2')->table('PrTut')->updateOrInsert(
+                DB::table('PrTut')->updateOrInsert(
                     ['id_Habilitacion' => $id],
                     [
                         'nombre_Empresa' => $request->nombre_Empresa ?? '',
@@ -132,17 +131,17 @@ class HabilitacionController extends Controller
             }
 
             // Supervisa
-            $nextId = fn() => (int) DB::connection('pgsql2')->table('Supervisa')->max('id_Supervisa') + 1;
+            $nextId = fn() => (int) DB::table('Supervisa')->max('id_Supervisa') + 1;
 
             if ($tipo === 'PrTut' && $rutSup) {
                 [$rp, $dvP] = $rutSup;
-                $ex = DB::connection('pgsql2')->table('Supervisa')->where([
+                $ex = DB::table('Supervisa')->where([
                     'id_Habilitacion' => $id,
                     'rut_Profesor' => $rp,
                     'DV' => $dvP,
                 ])->exists();
                 if (!$ex) {
-                    DB::connection('pgsql2')->table('Supervisa')->insert([
+                    DB::table('Supervisa')->insert([
                         'id_Supervisa' => $nextId(),
                         'id_Habilitacion' => $id,
                         'rut_Profesor' => $rp,
@@ -154,13 +153,13 @@ class HabilitacionController extends Controller
 
             if (($tipo === 'Pring' || $tipo === 'Prinv') && $rutCom) {
                 [$rp, $dvP] = $rutCom;
-                $ex = DB::connection('pgsql2')->table('Supervisa')->where([
+                $ex = DB::table('Supervisa')->where([
                     'id_Habilitacion' => $id,
                     'rut_Profesor' => $rp,
                     'DV' => $dvP,
                 ])->exists();
                 if (!$ex) {
-                    DB::connection('pgsql2')->table('Supervisa')->insert([
+                    DB::table('Supervisa')->insert([
                         'id_Supervisa' => $nextId(),
                         'id_Habilitacion' => $id,
                         'rut_Profesor' => $rp,
@@ -172,13 +171,13 @@ class HabilitacionController extends Controller
 
             if (($tipo === 'Pring' || $tipo === 'Prinv') && $rutCg) {
                 [$rp, $dvP] = $rutCg;
-                $ex = DB::connection('pgsql2')->table('Supervisa')->where([
+                $ex = DB::table('Supervisa')->where([
                     'id_Habilitacion' => $id,
                     'rut_Profesor' => $rp,
                     'DV' => $dvP,
                 ])->exists();
                 if (!$ex) {
-                    DB::connection('pgsql2')->table('Supervisa')->insert([
+                    DB::table('Supervisa')->insert([
                         'id_Supervisa' => $nextId(),
                         'id_Habilitacion' => $id,
                         'rut_Profesor' => $rp,
