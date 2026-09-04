@@ -64,7 +64,7 @@ class ModulosSyncService
         // =====================
         // Alumnos: Crear nuevos y actualizar existentes
         // =====================
-        $alumnosDestino = DB::connection('pgsql2')->table('Alumno')->get();
+        $alumnosDestino = DB::table('Alumno')->get();
         $mapAlumnosDestino = [];
         foreach ($alumnosDestino as $a) {
             $mapAlumnosDestino[$a->rut_Alumno . '-' . $a->DV] = $a;
@@ -101,7 +101,7 @@ class ModulosSyncService
                         : ($mod->correo_Alumno ?? ''),
                 ];
                 try {
-                    DB::connection('pgsql2')->table('Alumno')->insert($insert);
+                    DB::table('Alumno')->insert($insert);
                     $res['alumnos_creados']++;
                     // Registrar creación (JSON con todos los campos como valor nuevo)
                     $this->registrarCambio('Alumno', $clave, '_creacion', null, json_encode($insert, JSON_UNESCAPED_UNICODE));
@@ -133,7 +133,7 @@ class ModulosSyncService
                 }
             }
             if (!empty($update)) {
-                DB::connection('pgsql2')->table('Alumno')
+                DB::table('Alumno')
                     ->where('rut_Alumno', $mod->rut_Alumno)
                     ->where('DV', $mod->DV)
                     ->update($update);
@@ -144,7 +144,7 @@ class ModulosSyncService
         // =====================
         // Profesores: Crear nuevos y actualizar existentes
         // =====================
-        $profesoresDestino = DB::connection('pgsql2')->table('Profesor')->get();
+        $profesoresDestino = DB::table('Profesor')->get();
         $mapProfesoresDestino = [];
         foreach ($profesoresDestino as $p) {
             $mapProfesoresDestino[$p->rut_Profesor . '-' . $p->DV] = $p;
@@ -166,7 +166,7 @@ class ModulosSyncService
                         : ($modP->correo_Profesor ?? ''),
                 ];
                 try {
-                    DB::connection('pgsql2')->table('Profesor')->insert($insert);
+                    DB::table('Profesor')->insert($insert);
                     $res['profesores_creados']++;
                     $this->registrarCambio('Profesor', $clave, '_creacion', null, json_encode($insert, JSON_UNESCAPED_UNICODE));
                     if (!$this->validarCorreoUcsc($modP->correo_Profesor ?? '')) {
@@ -191,7 +191,7 @@ class ModulosSyncService
                 }
             }
             if (!empty($update)) {
-                DB::connection('pgsql2')->table('Profesor')
+                DB::table('Profesor')
                     ->where('rut_Profesor', $modP->rut_Profesor)
                     ->where('DV', $modP->DV)
                     ->update($update);
@@ -215,7 +215,7 @@ class ModulosSyncService
 
         foreach ($notas as $n) {
             $total++;
-            $hab = DB::connection('pgsql2')->table('Habilitacion_Profesional')
+            $hab = DB::table('Habilitacion_Profesional')
                 ->where('rut_Alumno', $n->rut_Alumno)
                 ->where('DV', $n->DV)
                 ->first();
@@ -228,7 +228,7 @@ class ModulosSyncService
 
             $notaAnterior = $hab->nota;
 
-            DB::connection('pgsql2')->table('Habilitacion_Profesional')
+            DB::table('Habilitacion_Profesional')
                 ->where('id_Habilitacion', $hab->id_Habilitacion)
                 ->update([
                     'nota' => $n->nota_Alumno,

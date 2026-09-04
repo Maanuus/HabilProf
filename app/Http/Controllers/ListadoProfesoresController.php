@@ -46,7 +46,7 @@ class ListadoProfesoresController extends Controller
         $semestre = $request->semestre_inicio;
         $solo_semestre = $request->has('solo_semestre'); // checkbox
 
-        $query = DB::connection('pgsql2')->table('Supervisa')
+        $query = DB::table('Supervisa')
             ->join('Profesor', function ($join) {
                 $join->on('Supervisa.rut_Profesor', '=', 'Profesor.rut_Profesor')
                     ->on('Supervisa.DV', '=', 'Profesor.DV');
