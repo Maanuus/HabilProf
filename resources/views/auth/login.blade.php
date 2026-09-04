@@ -1,54 +1,70 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
+    <meta charset="utf-8">
     <title>Login | HabilProf</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body{background:#f5f7fb}
-        .brand-dot{width:44px;height:44px;border-radius:50%;background:#0d6efd}
-    </style>
     <link rel="icon" href="{{ asset('images/ucsc_icon.png') }}" type="image/x-icon">
+
+    <!-- Carga de Tailwind CSS a través de Vite -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <div class="min-vh-100 d-flex align-items-center">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-sm-10 col-md-7 col-lg-5">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body p-4 p-md-5">
-                            <div class="text-center mb-4">
-                                <div><img src="{{ asset('images/ucsc_logo_color.png') }}" alt="Logo" width=200></div>
-                                <h1 class="h5 mt-3 mb-0">Portal de Ingreso</h1>
-                                <div class="text-muted small">HabilProf</div>
-                            </div>
-                            <form method="POST" action="{{ route('login.post') }}">
-                            @csrf
-                                <div class="mb-3">
-                                    <label for="rut" class="form-label fw-semibold">RUT</label>
-                                    <input name="rut" id="rut" type="text" class="form-control" placeholder="Ej: 12.345.678-K" value="{{ old('rut') }}">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="password" class="form-label fw-semibold">Contraseña</label>
-                                    <input name="password" id="password" type="password" class="form-control" placeholder="********">
-                                </div>
-                                <button class="btn btn-primary w-100" style="--bs-btn-bg:#dd120bff;">Ingresa</button>
-                                <div class="mb-3">
-                                    Si aún no tienes tu contraseña, haz click <a href="{{ route('register') }}" class="link-primary">aquí</a>.
-                                </div>
-                                @error('rut') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
-                            </form>
-                        </div>
+<body class="bg-[#f5f7fb] font-sans antialiased">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            
+            <!-- Tarjeta principal -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8">
+                
+                <!-- Encabezado / Logo -->
+                <div class="text-center mb-6 ">
+                    <div class="flex justify-center">
+                        <img src="{{ asset('images/ucsc_logo_color.png') }}" alt="Logo" class="w-50 h-auto">
                     </div>
-                    <div class="text-center mt-3 text-muted small">
-                        © {{ date('Y') }} HabilProf
-                    </div>
+                    <h1 class="text-lg font-bold mt-4 mb-0 text-gray-800">Portal de Ingreso</h1>
+                    <div class="text-gray-500 text-sm">HabilProf</div>
                 </div>
+
+                <!-- Formulario -->
+                <form method="POST" action="{{ route('login.post') }}" class="space-y-4">
+                    @csrf
+                    
+                    <!-- Campo RUT -->
+                    <div>
+                        <label for="rut" class="block text-sm font-semibold text-gray-700 mb-1">RUT</label>
+                        <input name="rut" id="rut" type="text" 
+                               value="{{ old('rut') }}"
+                               placeholder="Ej: 12.345.678-K" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#dd120b] focus:border-transparent transition">
+                    </div>
+
+                    <!-- Campo Contraseña -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Contraseña</label>
+                        <input name="password" id="password" type="password" 
+                               placeholder="********" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#dd120b] focus:border-transparent transition">
+                    </div>
+
+                    <!-- Botón de Submit -->
+                    <button type="submit" 
+                            class="w-full bg-[#dd120b] hover:bg-red-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm transition duration-150 ease-in-out shadow-sm cursor-pointer">
+                        Ingresa
+                    </button>
+
+                    <!-- Error de validación -->
+                    @error('rut')
+                        <div class="text-red-600 text-xs font-medium mt-2 text-center">{{ $message }}</div>
+                    @enderror
+                </form>
             </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-4 text-gray-400 text-xs">
+                © {{ date('Y') }} HabilProf
+            </div>
+
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
