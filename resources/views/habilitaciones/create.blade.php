@@ -208,7 +208,7 @@
                             class="w-full sm:w-auto px-6 py-2.5 bg-[#dd120b] hover:bg-red-700 text-white font-semibold rounded-lg text-sm transition duration-150 shadow-md cursor-pointer">
                         Guardar Habilitación
                     </button>
-                     <a href="{{ route('admin.panel') }}" 
+                     <a href="{{ route('home') }}" 
                    class="inline-flex justify-end px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium text-sm rounded-lg transition duration-150 shadow-xs">
                     ← Atrás
                 </a>
