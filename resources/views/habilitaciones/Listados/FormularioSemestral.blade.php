@@ -66,7 +66,7 @@
                 <!-- Campo Semestre Inicio -->
                 <div>
                     <label for="semestre_inicio" class="block text-sm font-semibold text-gray-700 mb-1">
-                        Semestre inicio (ej: 2023-1)
+                        Semestre inicio
                     </label>
                     <input 
                         type="text" 
@@ -74,7 +74,7 @@
                         id="semestre_inicio"
                         class="w-full px-3.5 py-2 border @error('semestre_inicio') border-red-500 @else border-gray-300 @enderror rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition" 
                         value="{{ old('semestre_inicio') }}"
-                        placeholder="AAAA-S"
+                        placeholder="Ej: 2023-1"
                         required 
                         pattern="^(199[0-9]|20[0-3][0-9]|204[0-5])-(1|2)$"
                         title="Debe tener el formato AAAA-S, con año entre 1990 y 2045, y S igual a 1 o 2."
