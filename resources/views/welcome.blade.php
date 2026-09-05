@@ -40,7 +40,7 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grow">
         
         @include('partials._sync_notification')
 
@@ -158,5 +158,10 @@
     </main>
 
 </body>
+  <footer class="bg-white border-t border-gray-200 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+            © {{ date('Y') }} HabilProf — Universidad Católica de la Santísima Concepción
+        </div>
+    </footer>
 
 </html>
