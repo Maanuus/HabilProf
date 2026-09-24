@@ -23,8 +23,7 @@ class ModulosSyncService
      */
     public function obtenerIncompletos(): array
     {
-        $alumnos = DB::connection('pgsql2')
-            ->table('Alumno')
+        $alumnos = DB::table('Alumno')
             ->where(function ($q) {
                 $q->whereNull('nombre_Alumno')->orWhere('nombre_Alumno', '')
                     ->orWhereNull('carrera')->orWhere('carrera', '')
@@ -32,8 +31,7 @@ class ModulosSyncService
             })
             ->get();
 
-        $profesores = DB::connection('pgsql2')
-            ->table('Profesor')
+        $profesores = DB::table('Profesor')
             ->where(function ($q) {
                 $q->whereNull('nombre_Profesor')->orWhere('nombre_Profesor', '')
                     ->orWhereNull('correo_Profesor')->orWhere('correo_Profesor', '');

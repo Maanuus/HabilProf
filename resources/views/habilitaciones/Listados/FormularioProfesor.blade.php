@@ -2,11 +2,8 @@
 
 @section('title', 'UCSC - Filtrar Habilitaciones por Profesor')
 @section('content')
-<body class="bg-gray-100 font-sans text-gray-800 min-h-screen flex flex-col">
-
-    <!-- Contenido Principal -->
-    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grow">
-        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 sm:p-8">
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 sm:p-8">
             
             <!-- Encabezado de la tarjeta -->
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
@@ -135,9 +132,5 @@
                 </div>
             </form>
         </div>
-    </main>
-
-
-</body>
-</html>
+    </div>
 @endsection

@@ -112,14 +112,14 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        // Base de origen Alumnos
+        // Base de origen Alumnos (Simulación Sistema Central Modulos)
         'Modulos' => [
             'driver' => 'pgsql',
-            'host' => env('DB_ALUMNOS_HOST', '127.0.0.1'),
-            'port' => env('DB_ALUMNOS_PORT', '5432'),
+            'host' => env('DB_ALUMNOS_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('DB_ALUMNOS_PORT', env('DB_PORT', '5432')),
             'database' => env('DB_ALUMNOS_DATABASE', 'Modulos'),
-            'username' => env('DB_ALUMNOS_USERNAME', 'postgres'),
-            'password' => env('DB_ALUMNOS_PASSWORD', '1234'),
+            'username' => env('DB_ALUMNOS_USERNAME', env('DB_USERNAME', 'postgres')),
+            'password' => env('DB_ALUMNOS_PASSWORD', env('DB_PASSWORD', '')),
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',

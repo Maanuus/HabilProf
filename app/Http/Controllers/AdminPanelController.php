@@ -17,13 +17,19 @@ class AdminPanelController extends Controller
 
     public function ejecutarSync(ModulosSyncService $sync)
     {
-        $incompletos = $sync->completarIncompletos();
-        $notas = $sync->sincronizarNotas();
+        try {
+            $incompletos = $sync->completarIncompletos();
+            $notas = $sync->sincronizarNotas();
 
-        return redirect()->route('admin.panel')
-            ->with('sync_result', [
-                'incompletos' => $incompletos,
-                'notas' => $notas,
-            ]);
+            return redirect()->route('admin.panel')
+                ->with('sync_result', [
+                    'incompletos' => $incompletos,
+                    'notas' => $notas,
+                ]);
+        } catch (\Throwable $e) {
+            $msg = mb_convert_encoding($e->getMessage(), 'UTF-8', 'auto');
+            return redirect()->route('admin.panel')
+                ->with('sync_error', 'No fue posible sincronizar con el sistema externo: ' . $msg);
+        }
     }
 }

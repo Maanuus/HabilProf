@@ -191,9 +191,117 @@ class HabilitacionController extends Controller
         return redirect()->route('home')->with('success', 'Habilitación guardada.');
     }
 
+    public function edit($id)
+    {
+        $id = (int) $id;
+
+        $h = DB::table('Habilitacion_Profesional')
+            ->join('Alumno', function ($join) {
+                $join->on('Habilitacion_Profesional.rut_Alumno', '=', 'Alumno.rut_Alumno')
+                     ->on('Habilitacion_Profesional.DV', '=', 'Alumno.DV');
+            })
+            ->leftJoin('Pring', 'Pring.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
+            ->leftJoin('Prinv', 'Prinv.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
+            ->leftJoin('PrTut', 'PrTut.id_Habilitacion', '=', 'Habilitacion_Profesional.id_Habilitacion')
+            ->where('Habilitacion_Profesional.id_Habilitacion', $id)
+            ->select(
+                'Habilitacion_Profesional.*',
+                'Alumno.nombre_Alumno as nombre_alumno',
+                'Alumno.carrera',
+                'Alumno.correo_Alumno as correo_alumno',
+                'Pring.titulo as titulo_pring',
+                'Prinv.titulo as titulo_prinv',
+                'PrTut.nombre_Empresa',
+                'PrTut.nombre_Supervisor'
+            )
+            ->first();
+
+        if (!$h) {
+            abort(404, 'La habilitación no existe.');
+        }
+
+        // Obtener profesores supervisores asignados
+        $supervisiones = DB::table('Supervisa')
+            ->where('id_Habilitacion', $id)
+            ->get();
+
+        $rutComision = $supervisiones->firstWhere('tipo_Profesor', 'Profesor Comisión');
+        $rutCoguia = $supervisiones->firstWhere('tipo_Profesor', 'Profesor Co-Guía');
+
+        $habilitacion = [
+            'id_Habilitacion' => $h->id_Habilitacion,
+            'id_habilitacion' => $h->id_Habilitacion,
+            'rut' => "{$h->rut_Alumno}-{$h->DV}",
+            'nombre_alumno' => $h->nombre_alumno,
+            'carrera' => $h->carrera,
+            'correo_alumno' => $h->correo_alumno,
+            'tipo_HabilProf' => $h->tipo_HabilProf,
+            'semestre_inicio' => $h->semestre_inicio,
+            'nota' => $h->nota,
+            'descripcion' => $h->descripcion,
+            'titulo' => $h->titulo_pring ?? $h->titulo_prinv ?? '',
+            'nombre_Empresa' => $h->nombre_Empresa ?? '',
+            'nombre_Supervisor' => $h->nombre_Supervisor ?? '',
+            'rut_profesor_comision' => $rutComision ? "{$rutComision->rut_Profesor}-{$rutComision->DV}" : '',
+            'rut_profesor_coguia' => $rutCoguia ? "{$rutCoguia->rut_Profesor}-{$rutCoguia->DV}" : '',
+        ];
+
+        return view('habilitaciones.edit', compact('habilitacion'));
+    }
+
     public function update(Request $request, $id)
     {
-        // VA AL HOME.
-        return redirect()->route('home')->with('ok', "Habilitacion #$id actualizada (mock).");
+        $id = (int) $id;
+        $tipo = $request->tipo_HabilProf;
+
+        $request->validate([
+            'nombre_alumno' => 'required|string|max:100',
+            'carrera' => 'required|string|max:100',
+            'correo_alumno' => 'required|email|max:100',
+            'tipo_HabilProf' => 'required|in:Pring,Prinv,PrTut',
+            'nota' => 'nullable|numeric|min:1.0|max:7.0',
+            'semestre_inicio' => 'nullable|string|max:10',
+        ]);
+
+        [$rutAl, $dvAl] = $this->splitRut($request->rut);
+
+        DB::transaction(function () use ($request, $id, $tipo, $rutAl, $dvAl) {
+            // Actualizar Alumno
+            DB::table('Alumno')
+                ->where('rut_Alumno', $rutAl)
+                ->where('DV', $dvAl)
+                ->update([
+                    'nombre_Alumno' => $request->nombre_alumno,
+                    'carrera' => $request->carrera,
+                    'correo_Alumno' => $request->correo_alumno,
+                ]);
+
+            // Actualizar Habilitación Base
+            DB::table('Habilitacion_Profesional')
+                ->where('id_Habilitacion', $id)
+                ->update([
+                    'tipo_HabilProf' => $tipo,
+                    'nota' => $request->nota ? (float) $request->nota : null,
+                    'descripcion' => ($tipo === 'PrTut') ? null : $request->descripcion,
+                    'semestre_inicio' => $request->semestre_inicio,
+                ]);
+
+            // Actualizar Subtipo
+            if ($tipo === 'Pring') {
+                DB::table('Pring')->updateOrInsert(['id_Habilitacion' => $id], ['titulo' => $request->titulo ?? '']);
+            } elseif ($tipo === 'Prinv') {
+                DB::table('Prinv')->updateOrInsert(['id_Habilitacion' => $id], ['titulo' => $request->titulo ?? '']);
+            } elseif ($tipo === 'PrTut') {
+                DB::table('PrTut')->updateOrInsert(
+                    ['id_Habilitacion' => $id],
+                    [
+                        'nombre_Empresa' => $request->nombre_Empresa ?? '',
+                        'nombre_Supervisor' => $request->nombre_Supervisor ?? '',
+                    ]
+                );
+            }
+        });
+
+        return redirect()->route('home')->with('success', "Habilitación #$id actualizada con éxito.");
     }
 }

@@ -3,11 +3,8 @@
 @section('title', 'UCSC - Nueva Habilitación')
 
 @section('content')
-<body class="bg-gray-100 font-sans text-gray-800 min-h-screen flex flex-col">
-
-    <!-- Contenido Principal -->
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grow">
-        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 sm:p-8">
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 sm:p-8">
             
             <!-- Encabezado de la vista -->
             <div class="flex items-center justify-center mb-6 pb-4 border-b border-gray-200">
@@ -183,9 +180,11 @@
 
             </form>
         </div>
-    </main>
+    </div>
+@endsection
 
-    <!-- Script de lógica dinámicas -->
+@push('scripts')
+    <!-- Script de lógica dinámica -->
     <script>
         const tipoSelect = document.getElementById('tipo_HabilProf');
         const grupoProyecto = document.getElementById('grupoProyecto');
@@ -221,6 +220,4 @@
         tipoSelect.addEventListener('change', updateUI);
         window.addEventListener('load', updateUI);
     </script>
-</body>
-</html>
-@endsection
+@endpush

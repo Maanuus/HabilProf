@@ -3,12 +3,7 @@
 @section('title', 'UCSC - Resultados Históricos')
 
 @section('content')
-<body class="bg-gray-100 font-sans text-gray-800 min-h-screen flex flex-col">
-
-    <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grow">
-        
-        <!-- Tarjeta de Contenido -->
+    <!-- Tarjeta de Contenido -->
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             
             <!-- Encabezado con Título y Botón Atrás -->
@@ -96,8 +91,4 @@
             @endif
 
         </div>
-    </main>
-
-</body>
-</html>
 @endsection
