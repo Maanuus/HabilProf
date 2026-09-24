@@ -1,4 +1,4 @@
-<div id="sync-notification-container"></div>
+<div id="sync-notification-container" class="mb-6"></div>
 
 <script>
 let lastNotificationId = localStorage.getItem('last_shown_notification_id') || '';
@@ -14,47 +14,43 @@ function showNotification(data) {
     if (!data || !data.notification) return;
     
     const notificationId = data.id;
-    
-    // No mostrar si ya fue cerrada
     if (dismissedNotifications.includes(notificationId)) return;
-    
-    // No mostrar si es la misma que ya se mostró
     if (notificationId === lastNotificationId) return;
     
     const notification = data.notification;
     const container = document.getElementById('sync-notification-container');
     
-    let alertClass = 'alert-info';
-    let content = '';
+    let isError = !!notification.error;
+    let containerClass = isError 
+        ? 'bg-red-50 border-red-300 text-red-800' 
+        : 'bg-blue-50 border-blue-200 text-blue-900';
+    let iconSvg = isError
+        ? `<svg class="w-5 h-5 text-red-500 mr-3 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>`
+        : `<svg class="w-5 h-5 text-blue-600 mr-3 shrink-0 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>`;
     
-    if (notification.error) {
-        alertClass = 'alert-danger';
-        content = `
-            <strong>Error en sincronización</strong>
-            <p class="mb-0 small">${notification.error}</p>
-        `;
-    } else {
-        content = `
-            <strong>Sincronización completada</strong>
-            <span class="small text-muted">(${notification.timestamp})</span>
-            <div class="small mt-1">
-                Alumnos: +${notification.alumnos_creados || 0} / ${notification.alumnos} act | 
-                Profesores: +${notification.profesores_creados || 0} / ${notification.profesores} act | 
-                Notas: ${notification.notas_total} 
-                (Aprobadas: ${notification.notas_aprobadas}, Reprobadas: ${notification.notas_reprobadas})
-            </div>
-        `;
-    }
-    
+    let contentHtml = isError
+        ? `<div><p class="font-bold text-sm">Error en sincronización</p><p class="text-xs mt-0.5">${notification.error}</p></div>`
+        : `<div>
+             <div class="flex items-center space-x-2">
+                 <span class="font-bold text-sm">Sincronización completada</span>
+                 <span class="text-xs text-blue-600 font-mono">(${notification.timestamp})</span>
+             </div>
+             <div class="text-xs mt-1 text-blue-700 flex flex-wrap gap-x-3 gap-y-0.5">
+                 <span>Alumnos: <strong>+${notification.alumnos_creados || 0} / ${notification.alumnos} act</strong></span>
+                 <span>Profesores: <strong>+${notification.profesores_creados || 0} / ${notification.profesores} act</strong></span>
+                 <span>Notas: <strong>${notification.notas_total}</strong> (Aprobadas: ${notification.notas_aprobadas}, Reprobadas: ${notification.notas_reprobadas})</span>
+             </div>
+           </div>`;
+
     container.innerHTML = `
-        <div class="alert ${alertClass} alert-dismissible fade show" role="alert" id="${notificationId}">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-arrow-repeat me-2"></i>
-                <div class="flex-grow-1">
-                    ${content}
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="dismissNotification('${notificationId}')"></button>
+        <div id="${notificationId}" class="flex items-center justify-between p-4 border rounded-xl shadow-xs transition duration-200 ${containerClass}">
+            <div class="flex items-center">
+                ${iconSvg}
+                ${contentHtml}
             </div>
+            <button type="button" onclick="dismissNotification('${notificationId}')" class="text-gray-400 hover:text-gray-700 p-1.5 rounded-lg hover:bg-black/5 transition cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
         </div>
     `;
     
@@ -62,18 +58,13 @@ function showNotification(data) {
     localStorage.setItem('last_shown_notification_id', notificationId);
 }
 
-// Polling cada 5 segundos
 function checkForNewNotifications() {
     fetch('{{ route('api.sync.notification') }}')
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => showNotification(data))
-        .catch(error => console.error('Error fetching notification:', error));
+        .catch(err => console.error('Error polling sync notification:', err));
 }
 
-// Verificar al cargar la página
 checkForNewNotifications();
-
-// Polling cada 5 segundos
 setInterval(checkForNewNotifications, 5000);
 </script>
-

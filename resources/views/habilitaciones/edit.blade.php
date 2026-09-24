@@ -1,214 +1,200 @@
-<!doctype html>
-<html lang="es">
+@extends('layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <title>Editar habilitación</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('title', 'UCSC - Editar Habilitación #' . ($habilitacion['id_Habilitacion'] ?? $habilitacion['id_habilitacion']))
 
-    <!-- Bootstrap 5 (CDN) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" href="{{ asset('images/ucsc_icon.png') }}" type="image/x-icon">
+@section('content')
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 sm:p-8">
+        
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+            <h1 class="text-xl font-bold text-gray-900">Editar Habilitación #{{ $habilitacion['id_Habilitacion'] ?? $habilitacion['id_habilitacion'] }}</h1>
+            <a href="{{ route('home') }}" class="text-sm font-medium text-gray-500 hover:text-gray-800">
+                ← Volver al Inicio
+            </a>
+        </div>
 
-    <style>
-        .ucsc-header {
-            background-color: #dd120bff;
-            color: white;
-        }
+        @if ($errors->any())
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                <div class="font-semibold mb-1">Corrige los siguientes errores:</div>
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        .stats-card {
-            border-left: 4px solid #0056b3;
-        }
+        <form action="{{ route('habilitaciones.update', $habilitacion['id_Habilitacion'] ?? $habilitacion['id_habilitacion']) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
 
-        .sync-status {
-            font-size: 0.8rem;
-        }
+            @php
+                $tipoActual = old('tipo_HabilProf', $habilitacion['tipo_HabilProf'] ?? '');
+            @endphp
 
-        .nav-link {
-            color: #495057;
-        }
-
-        .nav-link:hover {
-            background-color: #e9ecef;
-        }
-    </style>
-</head>
-
-<body class="bg-light">
-    <!-- Header -->
-    <header class="ucsc-header py-2">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h4 class="mb-0">
-                        <a href="{{ route('home') }}">
-                            <img src="{{ asset('images/ucsc_logo.png') }}" alt="Logo" width="180">
-                        </a>
-                    </h4>
+            <!-- Datos Principales -->
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <div class="sm:col-span-5">
+                    <label for="rut" class="block text-sm font-semibold text-gray-700 mb-1">RUT Alumno</label>
+                    <input type="text" name="rut" id="rut"
+                           class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                           value="{{ old('rut', $habilitacion['rut'] ?? (($habilitacion['rut_Alumno'] ?? '').'-'.($habilitacion['DV'] ?? ''))) }}" required>
                 </div>
-                <div class="col-auto">
-                    <span class="me-3"><i class="bi bi-person-circle"></i> Admin_DINF</span>
-                    <a class="btn btn-sm btn-outline-light" href="{{ route('home') }}">Salir</a>
+
+                <div class="sm:col-span-7">
+                    <label for="nombre_alumno" class="block text-sm font-semibold text-gray-700 mb-1">Nombre Alumno</label>
+                    <input type="text" name="nombre_alumno" id="nombre_alumno"
+                           class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                           value="{{ old('nombre_alumno', $habilitacion['nombre_alumno'] ?? ($habilitacion['nombre_Alumno'] ?? '')) }}" required>
+                </div>
+
+                <div class="sm:col-span-6">
+                    <label for="carrera" class="block text-sm font-semibold text-gray-700 mb-1">Carrera</label>
+                    <input type="text" name="carrera" id="carrera"
+                           class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                           value="{{ old('carrera', $habilitacion['carrera'] ?? '') }}" required>
+                </div>
+
+                <div class="sm:col-span-6">
+                    <label for="correo_alumno" class="block text-sm font-semibold text-gray-700 mb-1">Correo Alumno</label>
+                    <input type="email" name="correo_alumno" id="correo_alumno"
+                           class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                           value="{{ old('correo_alumno', $habilitacion['correo_alumno'] ?? ($habilitacion['correo_Alumno'] ?? '')) }}" required>
+                </div>
+
+                <div class="sm:col-span-6">
+                    <label for="id_habilitacion" class="block text-sm font-semibold text-gray-700 mb-1">ID Habilitación (Bloqueado)</label>
+                    <input type="number" name="id_habilitacion" id="id_habilitacion"
+                           class="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+                           value="{{ $habilitacion['id_Habilitacion'] ?? $habilitacion['id_habilitacion'] }}" readonly>
+                </div>
+
+                <div class="sm:col-span-6">
+                    <label for="tipo_HabilProf" class="block text-sm font-semibold text-gray-700 mb-1">Tipo Habilitación</label>
+                    <select name="tipo_HabilProf" id="tipo_HabilProf" 
+                            class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition" required>
+                        <option value="Pring" {{ $tipoActual === 'Pring' ? 'selected' : '' }}>Proyecto Ingeniería</option>
+                        <option value="Prinv" {{ $tipoActual === 'Prinv' ? 'selected' : '' }}>Proyecto Investigación</option>
+                        <option value="PrTut" {{ $tipoActual === 'PrTut' ? 'selected' : '' }}>Práctica Tutelada</option>
+                    </select>
                 </div>
             </div>
-        </div>
-    </header>
 
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <h1 class="h4 mb-4">Editar habilitación</h1>
+            <!-- Bloque Proyecto -->
+            <div id="grupoProyecto" class="p-5 bg-gray-50 border border-gray-200 rounded-xl space-y-4">
+                <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Detalles de Proyecto</h3>
+                
+                <div>
+                    <label for="titulo" class="block text-sm font-semibold text-gray-700 mb-1">Título</label>
+                    <input type="text" name="titulo" id="titulo" 
+                           class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                           value="{{ old('titulo', $habilitacion['titulo'] ?? '') }}">
+                </div>
 
-                        <form action="{{ route('habilitaciones.update', $habilitacion['id_habilitacion']) }}"
-                            method="POST" novalidate>
-                            @csrf
-                            @method('PUT')
+                <div>
+                    <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
+                    <textarea name="descripcion" id="descripcion" rows="3" 
+                              class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition">{{ old('descripcion', $habilitacion['descripcion'] ?? '') }}</textarea>
+                </div>
 
-                            <div class="row g-3">
-                                <div class="col-md-5">
-                                    <label class="form-label fw-semibold">RUT</label>
-                                    <input name="rut" value="{{ old('rut', $habilitacion['rut']) }}"
-                                        class="form-control" placeholder="Sin puntos y con número verificador" required>
-                                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="rut_profesor_comision" class="block text-sm font-semibold text-gray-700 mb-1">RUT Profesor Comisión</label>
+                        <input type="text" name="rut_profesor_comision" id="rut_profesor_comision"
+                               class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                               value="{{ old('rut_profesor_comision', $habilitacion['rut_profesor_comision'] ?? '') }}">
+                    </div>
 
-                                <div class="col-md-7">
-                                    <label class="form-label fw-semibold">Nombre Alumno</label>
-                                    <input name="nombre_alumno"
-                                        value="{{ old('nombre_alumno', $habilitacion['nombre_alumno']) }}"
-                                        class="form-control" placeholder="Nombre Completo" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Carrera</label>
-                                    <input name="carrera" value="{{ old('carrera', $habilitacion['carrera']) }}"
-                                        class="form-control" placeholder="Ej: Ingeniería Civil" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Correo Alumno</label>
-                                    <input name="correo_alumno"
-                                        value="{{ old('correo_alumno', $habilitacion['correo_alumno']) }}"
-                                        class="form-control" placeholder="Ej: alumno@ing.ucsc.cl" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">ID habilitación</label>
-                                    <input name="id_habilitacion"
-                                        value="{{ old('id_habilitacion', $habilitacion['id_habilitacion']) }}"
-                                        class="form-control" placeholder="ID de la habilitación" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Tipo de habilitación profesional</label>
-                                    <select name="tipo_HabilProf" id="tipo_HabilProf" class="form-select" required>
-                                        <option value="" disabled>Seleccione un tipo</option>
-                                        <option value="PrIng" {{ old('tipo_HabilProf', $habilitacion['tipo_HabilProf']) === 'PrIng' ? 'selected' : '' }}>Proyecto
-                                            Ingeniería</option>
-                                        <option value="PrInv" {{ old('tipo_HabilProf', $habilitacion['tipo_HabilProf']) === 'PrInv' ? 'selected' : '' }}>Proyecto
-                                            Investigación</option>
-                                        <option value="PrTut" {{ old('tipo_HabilProf', $habilitacion['tipo_HabilProf']) === 'PrTut' ? 'selected' : '' }}>Práctica
-                                            Tutelada</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Grupo Proyecto (PrIng/PrInv) -->
-                            @php $isProyecto = in_array(old('tipo_HabilProf', $habilitacion['tipo_HabilProf']), ['PrIng', 'PrInv']); @endphp
-                            <div id="grupoProyecto" class="mt-4" {{ $isProyecto ? '' : 'hidden' }}>
-                                <hr class="my-3">
-                                <h2 class="h6 mb-3">Datos de proyecto (PrIng/PrInv)</h2>
-
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold">Título</label>
-                                        <input name="titulo" id="titulo" class="form-control" maxlength="100"
-                                            placeholder="Solo letras y espacios (Máx. 100 carácteres)"
-                                            value="{{ old('titulo', $habilitacion['titulo']) }}"
-                                            pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,100}$">
-                                        <div class="invalid-feedback">Título inválido.</div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold">Descripción</label>
-                                        <textarea name="descripcion" id="descripcion" class="form-control" rows="4"
-                                            maxlength="500"
-                                            placeholder="Solo letras y espacios (máx 500)">{{ old('descripcion', $habilitacion['descripcion']) }}</textarea>
-                                        <div class="invalid-feedback">Descripción requerida.</div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">RUT Profesor Comisión
-                                            (obligatorio)</label>
-                                        <input name="rut_profesor_comision" id="rut_profesor_comision"
-                                            class="form-control" placeholder="Sin puntos y con número verificador"
-                                            pattern="^\d{7,8}-[\dkK]$"
-                                            value="{{ old('rut_profesor_comision', $habilitacion['rut_profesor_comision']) }}">
-                                        <div class="invalid-feedback">RUT inválido u omitido.</div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">RUT Profesor Co-guía (opcional)</label>
-                                        <input name="rut_profesor_coguia" id="rut_profesor_coguia" class="form-control"
-                                            placeholder="Sin puntos y con número verificador" pattern="^\d{7,8}-[\dkK]$"
-                                            value="{{ old('rut_profesor_coguia', $habilitacion['rut_profesor_coguia']) }}">
-                                        <div class="invalid-feedback">RUT inválido.</div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Semestre de inicio</label>
-                                        <input name="semestre_inicio" id="semestre_inicio" class="form-control"
-                                            placeholder="AAAA-S"
-                                            value="{{ old('semestre_inicio', $habilitacion['semestre_inicio']) }}"
-                                            pattern="^(1990|199[1-9]|20[0-3][0-9]|204[0-5])-[12]$">
-                                        <div class="invalid-feedback">Formato inválido (ej: 2025-1).</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Grupo Práctica (PrTut) -->
-                            @php $isPractica = old('tipo_HabilProf', $habilitacion['tipo_HabilProf']) === 'PrTut'; @endphp
-                            <div id="grupoPractica" class="mt-4" {{ $isPractica ? '' : 'hidden' }}>
-                                <hr class="my-3">
-                                <h2 class="h6 mb-3">Datos de práctica (PrTut)</h2>
-
-                                <div class="row g-3">
-                                    <div class="col-md-7">
-                                        <label class="form-label fw-semibold">Nombre Empresa</label>
-                                        <input name="nombre_Empresa" id="nombre_Empresa" class="form-control"
-                                            maxlength="100" placeholder="Solo letras y espacios (Máx. 100 carácteres)"
-                                            value="{{ old('nombre_Empresa', $habilitacion['nombre_Empresa']) }}"
-                                            pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,100}$">
-                                        <div class="invalid-feedback">Nombre inválido.</div>
-                                    </div>
-
-                                    <div class="col-md-5">
-                                        <label class="form-label fw-semibold">Nombre Supervisor</label>
-                                        <input name="nombre_Supervisor" id="nombre_Supervisor" class="form-control"
-                                            maxlength="80" placeholder="Solo letras y espacios (Máx. 80 carácteres)"
-                                            value="{{ old('nombre_Supervisor', $habilitacion['nombre_Supervisor']) }}"
-                                            pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{1,80}$">
-                                        <div class="invalid-feedback">Nombre inválido.</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex gap-2 mt-4">
-                                <a href="{{ route('home') }}" class="btn btn-outline-secondary">Cancelar</a>
-                                <button type="submit" class="btn btn-primary">Editar datos</button>
-                            </div>
-                        </form>
-
-                        <div class="alert alert-info mt-3 mb-0">
-                            Mockup: Al editar los datos se va a la página principal con mensaje.
-                        </div>
+                    <div>
+                        <label for="rut_profesor_coguia" class="block text-sm font-semibold text-gray-700 mb-1">RUT Profesor Co-guía (opcional)</label>
+                        <input type="text" name="rut_profesor_coguia" id="rut_profesor_coguia"
+                               class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                               value="{{ old('rut_profesor_coguia', $habilitacion['rut_profesor_coguia'] ?? '') }}">
                     </div>
                 </div>
+            </div>
 
-                <div class="text-muted small text-center mt-3">
-                    © {{ date('Y') }} HabilProf
+            <!-- Bloque Práctica Tutelada -->
+            <div id="grupoPractica" class="p-5 bg-gray-50 border border-gray-200 rounded-xl space-y-4">
+                <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Detalles de Práctica Tutelada</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nombre_Empresa" class="block text-sm font-semibold text-gray-700 mb-1">Nombre Empresa</label>
+                        <input type="text" name="nombre_Empresa" id="nombre_Empresa"
+                               class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                               value="{{ old('nombre_Empresa', $habilitacion['nombre_Empresa'] ?? '') }}">
+                    </div>
+
+                    <div>
+                        <label for="nombre_Supervisor" class="block text-sm font-semibold text-gray-700 mb-1">Nombre Supervisor</label>
+                        <input type="text" name="nombre_Supervisor" id="nombre_Supervisor"
+                               class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                               value="{{ old('nombre_Supervisor', $habilitacion['nombre_Supervisor'] ?? '') }}">
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Semestre y Nota -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="semestre_inicio" class="block text-sm font-semibold text-gray-700 mb-1">Semestre Inicio</label>
+                    <input type="text" name="semestre_inicio" id="semestre_inicio"
+                           class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                           value="{{ old('semestre_inicio', $habilitacion['semestre_inicio'] ?? '') }}" placeholder="Ej: 2026-1">
+                </div>
+
+                <div>
+                    <label for="nota" class="block text-sm font-semibold text-gray-700 mb-1">Calificación Final (Nota)</label>
+                    <input type="number" step="0.1" min="1.0" max="7.0" name="nota" id="nota"
+                           class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#dd120b] transition"
+                           value="{{ old('nota', $habilitacion['nota'] ?? '') }}" placeholder="Ej: 6.5 (Vacío si está en curso)">
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="pt-4 flex items-center justify-between border-t border-gray-200">
+                <button type="submit" 
+                        class="px-6 py-2.5 bg-[#dd120b] hover:bg-red-700 text-white font-semibold rounded-lg text-sm transition duration-150 shadow-md cursor-pointer">
+                    Actualizar Habilitación
+                </button>
+                <a href="{{ route('home') }}" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition">
+                    Cancelar
+                </a>
+            </div>
+        </form>
     </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+    const tipoSelect = document.getElementById('tipo_HabilProf');
+    const grupoProyecto = document.getElementById('grupoProyecto');
+    const grupoPractica = document.getElementById('grupoPractica');
+
+    function setGroupEnabled(groupEl, enabled) {
+        groupEl.style.display = enabled ? 'block' : 'none';
+        groupEl.querySelectorAll('input, textarea').forEach(el => {
+            el.disabled = !enabled;
+        });
+    }
+
+    function updateUI() {
+        const v = tipoSelect.value;
+        if (v === 'Pring' || v === 'Prinv') {
+            setGroupEnabled(grupoProyecto, true);
+            setGroupEnabled(grupoPractica, false);
+        } else if (v === 'PrTut') {
+            setGroupEnabled(grupoProyecto, false);
+            setGroupEnabled(grupoPractica, true);
+        } else {
+            setGroupEnabled(grupoProyecto, false);
+            setGroupEnabled(grupoPractica, false);
+        }
+    }
+
+    tipoSelect.addEventListener('change', updateUI);
+    window.addEventListener('load', updateUI);
+</script>
+@endpush

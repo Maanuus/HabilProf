@@ -74,7 +74,7 @@ class HabilitacionController extends Controller
         } elseif ($tipo === 'Pring' || $tipo === 'Prinv') {
             if ($rutCom) {
                 [$rp, $dvP] = $rutCom;
-                $comExiste = table('Profesor')
+                $comExiste = DB::table('Profesor')
                     ->where('rut_Profesor', $rp)
                     ->where('DV', $dvP)
                     ->exists();
