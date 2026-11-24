@@ -6,6 +6,22 @@ HabilProf es una plataforma web desarrollada en **Laravel 12** y **Tailwind CSS 
 
 ---
 
+## 📌 Origen y mejoras posteriores
+
+Proyecto desarrollado en equipo para el ramo **Taller de Ingeniería de Software I** (2025), junto a [NicoValdebenito](https://github.com/NicoValdebenito), [Hbarrera1559](https://github.com/Hbarrera1559), [Natter21](https://github.com/Natter21) y [ConstanzaP1](https://github.com/ConstanzaP1). El repositorio original, con la versión entregada en Bootstrap, está en [NicoValdebenito/HabilProf](https://github.com/NicoValdebenito/HabilProf).
+
+Después de la entrega continué el proyecto por mi cuenta (agosto–septiembre 2026):
+
+- Migré todas las vistas de Bootstrap a **Tailwind CSS 4**: login, inicio, creación y edición de habilitaciones, listados, panel de administración e historial de sincronización.
+- Creé los **modelos Eloquent** con sus relaciones (`Alumno`, `Profesor`, `HabilitacionProfesional`, `Pring`, `Prinv`, `PrTut`, `Supervisa`).
+- Terminé la **creación de habilitaciones** y los **listados por semestre y por profesor**.
+- Agregué **seeders con datos de ejemplo** para probar la aplicación sin la base de datos de la universidad.
+- Corregí la **sincronización** con la base de datos externa y una migración de la tabla `Supervisa`.
+- Agregué el middleware `PreventBackHistory`, que impide volver a páginas protegidas con el botón Atrás después de cerrar sesión.
+- Actualicé dependencias con vulnerabilidades conocidas.
+
+---
+
 ## 🚀 Stack Tecnológico
 
 - **Backend:** PHP 8.2+ / 8.4 — Laravel 12.x
@@ -43,7 +59,7 @@ npm -v
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone https://github.com/NicoValdebenito/HabilProf.git
+git clone https://github.com/Maanuus/HabilProf.git
 cd HabilProf
 ```
 
