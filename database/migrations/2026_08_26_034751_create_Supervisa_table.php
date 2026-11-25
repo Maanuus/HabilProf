@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('Supervisa', function (Blueprint $table) {
             $table->integer('id_Habilitacion');
             $table->integer('rut_Profesor');
-            $table->char('DV');
+            $table->char('DV', 1);
 
             $table->primary(['id_Habilitacion', 'rut_Profesor', 'DV']);
         });

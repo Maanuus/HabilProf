@@ -17,7 +17,7 @@ return new class extends Migration
             $table->float('nota')->nullable();
             $table->string('descripcion', 500);
             $table->integer('rut_Alumno')->nullable();
-            $table->char('DV')->nullable();
+            $table->char('DV', 1)->nullable();
             $table->string('semestre_inicio', 6)->nullable();
         });
         DB::statement("alter table \"Habilitacion_Profesional\" add column \"tipo_HabilProf\" tipo_habilprof null");
