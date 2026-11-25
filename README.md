@@ -1,8 +1,24 @@
 # HabilProf — Sistema de Gestión de Habilitaciones Profesionales
 **Universidad Católica de la Santísima Concepción (UCSC)**  
-**Facultad de Ingeniería**
+**Facultad de Ingeniería — Departamento de Ingeniería Civil Informática**  
+**Asignatura:** Taller de Ingeniería de Software 1  
+**Profesor Guía:** Pedro Rossel  
 
 HabilProf es una plataforma web desarrollada en **Laravel 12** y **Tailwind CSS 4** para la administración, supervisión y seguimiento de las Habilitaciones Profesionales (Proyectos de Ingeniería, Proyectos de Investigación y Prácticas Tuteladas) de la Facultad de Ingeniería de la UCSC.
+
+![Inicio de HabilProf](docs/screenshots/inicio.png)
+
+---
+
+## 📸 Capturas
+
+Todas las capturas usan los datos de ejemplo de los seeders.
+
+| Inicio de sesión | Nueva habilitación |
+| :---: | :---: |
+| ![Inicio de sesión](docs/screenshots/login.png) | ![Nueva habilitación](docs/screenshots/nueva-habilitacion.png) |
+| **Listado histórico por semestre** | **Panel de sincronización** |
+| ![Listado semestral](docs/screenshots/listado-semestral.png) | ![Panel de sincronización con Modulos](docs/screenshots/panel-sincronizacion.png) |
 
 ---
 
@@ -139,12 +155,11 @@ La aplicación estará accesible en:
 
 ## 👤 Credenciales de Acceso de Prueba
 
-Al ejecutar los seeders, se crean usuarios listos para iniciar sesión:
+Al ejecutar los seeders, se crea un usuario de prueba listo para iniciar sesión:
 
 | Rol | RUT de Acceso | Contraseña |
 | :--- | :--- | :--- |
 | **Administrador / Docente** | `12.345.678-9` | `password` |
-| **Usuario Alternativo** | `19.876.543-2` | `password` |
 
 *(El sistema acepta el RUT con puntos y guion, o solo números y dígito verificador).*
 
